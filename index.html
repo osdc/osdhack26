@@ -21,11 +21,22 @@
   <link rel="stylesheet" href="css/responsive.css">    <!-- responsive queries -->
 
   <style>
+    /* custom pizza cursor — tilted left, bigger, pixelated */
+    html {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48' style='shape-rendering:crispEdges'%3E%3Cg transform='rotate(-25 24 24)'%3E%3Cpolygon points='24,4 38,36 10,36' fill='%23f5c842' stroke='%23c89f2a' stroke-width='3'/%3E%3Cpolygon points='24,10 34,32 14,32' fill='%23f0b030'/%3E%3Ccircle cx='18' cy='26' r='4' fill='%23cc3333'/%3E%3Ccircle cx='30' cy='24' r='4' fill='%23cc3333'/%3E%3Ccircle cx='24' cy='18' r='4' fill='%23cc3333'/%3E%3Ccircle cx='20' cy='32' r='3' fill='%23cc3333'/%3E%3Ccircle cx='28' cy='30' r='3' fill='%23cc3333'/%3E%3C/g%3E%3C/svg%3E") 6 8, auto;
+    }
+
     /* basic setup */
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+
+    /* clickable elements keep pointer for UX */
+    a, button, .sfx-toggle, .press-start-text,
+    .grid-node, .grid-node *, .details-action-btn {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48' style='shape-rendering:crispEdges'%3E%3Cg transform='rotate(-25 24 24)'%3E%3Cpolygon points='24,4 38,36 10,36' fill='%23f5c842' stroke='%23c89f2a' stroke-width='3'/%3E%3Cpolygon points='24,10 34,32 14,32' fill='%23f0b030'/%3E%3Ccircle cx='18' cy='26' r='4' fill='%23cc3333'/%3E%3Ccircle cx='30' cy='24' r='4' fill='%23cc3333'/%3E%3Ccircle cx='24' cy='18' r='4' fill='%23cc3333'/%3E%3Ccircle cx='20' cy='32' r='3' fill='%23cc3333'/%3E%3Ccircle cx='28' cy='30' r='3' fill='%23cc3333'/%3E%3C/g%3E%3C/svg%3E") 6 8, pointer;
     }
 
     html, body {
@@ -55,7 +66,6 @@
       border: 2px solid #FFD700;
       color: #FFD700;
       padding: 5px 10px;
-      cursor: pointer;
       border-radius: 4px;
       transition: all 0.2s;
     }
@@ -88,7 +98,7 @@
       <feGaussianBlur in="SourceGraphic" stdDeviation="0.4" result="blurred"/>
       <!-- distortion setup -->
       <feDisplacementMap in="blurred" in2="SourceGraphic"
-        scale="6"
+        scale="0"
         xChannelSelector="R"
         yChannelSelector="G"
         result="warped"/>
@@ -140,9 +150,10 @@
     <div class="global-theme-bg" style="
       position: absolute; inset: 0; z-index: 50;
       background: linear-gradient(180deg,
-        #050a18 0%, #0a1428 20%, #0d1b2a 40%,
-        #12263e 52%, #0d3320 60%, #0a2818 66%,
-        #0a1628 72%, #0d1f3a 85%, #081422 100%);
+        #0f0520 0%, #17082e 15%, #2a1048 30%,
+        #4a1a5e 42%, #b0306a 52%, #d06050 60%,
+        #c04a3a 66%, #2a4a6a 75%, #1a3a5a 85%,
+        #0d2038 100%);
       background-size: cover;
       background-position: center;">
       <!-- piche ka scene -->
@@ -150,6 +161,7 @@
       <div class="menu-ground"></div>
       <div class="menu-water"></div>
       <div class="menu-stars"></div>
+      <div class="bg-neon-grid"></div>
     </div>
 
 
@@ -235,102 +247,69 @@
     <!-- main menu yahan -->
     <div class="menu-screen" id="menuScreen">
 
-      <!-- beech ka maal -->
-      <div class="menu-center">
-        <!-- pizza game bhai -->
-        <div id="pizzaEasterEgg">
-          <div id="pizza-wrap">
-            <div id="plate"></div>
-            <svg id="pizza-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-              <g class="slice-group" id="slice-0" data-idx="0">
-                <path class="slice-path" d="M200,200 L200,42 A158,158 0 0,1 337,121 Z" fill="#f5b942" stroke="#c8520a" stroke-width="2.5" stroke-linejoin="round"/>
-                <path d="M200,42 A158,158 0 0,1 337,121" fill="none" stroke="#8b4513" stroke-width="22" stroke-linecap="round"/>
-                <path d="M200,200 L205,54 A148,148 0 0,1 327,126 Z" fill="#f5c842" opacity="0.9"/>
-                <circle cx="248" cy="110" r="18" fill="#c03008" opacity="0.7"/><circle cx="278" cy="145" r="13" fill="#c03008" opacity="0.6"/>
-                <circle cx="248" cy="110" r="14" fill="#8b1a0a"/><circle cx="248" cy="110" r="10" fill="#a02010"/>
-                <circle cx="278" cy="145" r="10" fill="#8b1a0a"/><circle cx="278" cy="145" r="7" fill="#a02010"/>
-                <ellipse cx="260" cy="130" rx="6" ry="10" fill="#2d8b2d" transform="rotate(-30 260 130)"/>
-                <path d="M220,90 Q240,70 260,85" fill="none" stroke="#f5e060" stroke-width="2.5" opacity="0.6"/>
-                <path d="M205,50 A155,155 0 0,1 330,123" fill="none" stroke="#6b3410" stroke-width="3" stroke-dasharray="6 8" opacity="0.4"/>
-              </g>
-              <g class="slice-group" id="slice-1" data-idx="1">
-                <path class="slice-path" d="M200,200 L337,121 A158,158 0 0,1 337,279 Z" fill="#f5b942" stroke="#c8520a" stroke-width="2.5" stroke-linejoin="round"/>
-                <path d="M337,121 A158,158 0 0,1 337,279" fill="none" stroke="#8b4513" stroke-width="22" stroke-linecap="round"/>
-                <path d="M200,200 L327,126 A148,148 0 0,1 327,274 Z" fill="#f5c842" opacity="0.9"/>
-                <circle cx="310" cy="175" r="20" fill="#c03008" opacity="0.7"/><circle cx="310" cy="240" r="15" fill="#c03008" opacity="0.6"/>
-                <circle cx="310" cy="175" r="16" fill="#8b1a0a"/><circle cx="310" cy="175" r="11" fill="#a02010"/>
-                <circle cx="310" cy="240" r="11" fill="#8b1a0a"/><circle cx="310" cy="240" r="7.5" fill="#a02010"/>
-                <ellipse cx="295" cy="210" rx="6" ry="10" fill="#2d8b2d" transform="rotate(20 295 210)"/>
-                <path d="M320,150 Q340,170 325,185" fill="none" stroke="#f5e060" stroke-width="2.5" opacity="0.6"/>
-                <path d="M333,126 A148,148 0 0,1 333,274" fill="none" stroke="#6b3410" stroke-width="3" stroke-dasharray="6 8" opacity="0.4"/>
-              </g>
-              <g class="slice-group" id="slice-2" data-idx="2">
-                <path class="slice-path" d="M200,200 L337,279 A158,158 0 0,1 200,358 Z" fill="#f5b942" stroke="#c8520a" stroke-width="2.5" stroke-linejoin="round"/>
-                <path d="M337,279 A158,158 0 0,1 200,358" fill="none" stroke="#8b4513" stroke-width="22" stroke-linecap="round"/>
-                <path d="M200,200 L327,274 A148,148 0 0,1 200,348 Z" fill="#f5c842" opacity="0.9"/>
-                <circle cx="285" cy="310" r="18" fill="#c03008" opacity="0.7"/><circle cx="248" cy="330" r="14" fill="#c03008" opacity="0.6"/>
-                <circle cx="285" cy="310" r="14" fill="#8b1a0a"/><circle cx="285" cy="310" r="10" fill="#a02010"/>
-                <circle cx="248" cy="330" r="10" fill="#8b1a0a"/><circle cx="248" cy="330" r="7" fill="#a02010"/>
-                <ellipse cx="265" cy="295" rx="6" ry="11" fill="#2d8b2d" transform="rotate(45 265 295)"/>
-                <path d="M310,280 Q300,310 275,305" fill="none" stroke="#f5e060" stroke-width="2.5" opacity="0.6"/>
-                <path d="M333,277 A148,148 0 0,1 200,348" fill="none" stroke="#6b3410" stroke-width="3" stroke-dasharray="6 8" opacity="0.4"/>
-              </g>
-              <g class="slice-group" id="slice-3" data-idx="3">
-                <path class="slice-path" d="M200,200 L200,358 A158,158 0 0,1 63,279 Z" fill="#f5b942" stroke="#c8520a" stroke-width="2.5" stroke-linejoin="round"/>
-                <path d="M200,358 A158,158 0 0,1 63,279" fill="none" stroke="#8b4513" stroke-width="22" stroke-linecap="round"/>
-                <path d="M200,200 L200,348 A148,148 0 0,1 73,274 Z" fill="#f5c842" opacity="0.9"/>
-                <circle cx="152" cy="330" r="18" fill="#c03008" opacity="0.7"/><circle cx="115" cy="310" r="14" fill="#c03008" opacity="0.6"/>
-                <circle cx="152" cy="330" r="14" fill="#8b1a0a"/><circle cx="152" cy="330" r="10" fill="#a02010"/>
-                <circle cx="115" cy="310" r="10" fill="#8b1a0a"/><circle cx="115" cy="310" r="7" fill="#a02010"/>
-                <ellipse cx="135" cy="295" rx="6" ry="11" fill="#2d8b2d" transform="rotate(-45 135 295)"/>
-                <path d="M90,280 Q100,310 125,305" fill="none" stroke="#f5e060" stroke-width="2.5" opacity="0.6"/>
-                <path d="M200,348 A148,148 0 0,1 73,274" fill="none" stroke="#6b3410" stroke-width="3" stroke-dasharray="6 8" opacity="0.4"/>
-              </g>
-              <g class="slice-group" id="slice-4" data-idx="4">
-                <path class="slice-path" d="M200,200 L63,279 A158,158 0 0,1 63,121 Z" fill="#f5b942" stroke="#c8520a" stroke-width="2.5" stroke-linejoin="round"/>
-                <path d="M63,279 A158,158 0 0,1 63,121" fill="none" stroke="#8b4513" stroke-width="22" stroke-linecap="round"/>
-                <path d="M200,200 L73,274 A148,148 0 0,1 73,126 Z" fill="#f5c842" opacity="0.9"/>
-                <circle cx="90" cy="240" r="20" fill="#c03008" opacity="0.7"/><circle cx="90" cy="175" r="15" fill="#c03008" opacity="0.6"/>
-                <circle cx="90" cy="240" r="16" fill="#8b1a0a"/><circle cx="90" cy="240" r="11" fill="#a02010"/>
-                <circle cx="90" cy="175" r="11" fill="#8b1a0a"/><circle cx="90" cy="175" r="7.5" fill="#a02010"/>
-                <ellipse cx="105" cy="210" rx="6" ry="10" fill="#2d8b2d" transform="rotate(-20 105 210)"/>
-                <path d="M80,150 Q60,170 75,185" fill="none" stroke="#f5e060" stroke-width="2.5" opacity="0.6"/>
-                <path d="M67,274 A148,148 0 0,1 67,126" fill="none" stroke="#6b3410" stroke-width="3" stroke-dasharray="6 8" opacity="0.4"/>
-              </g>
-              <g class="slice-group" id="slice-5" data-idx="5">
-                <path class="slice-path" d="M200,200 L63,121 A158,158 0 0,1 200,42 Z" fill="#f5b942" stroke="#c8520a" stroke-width="2.5" stroke-linejoin="round"/>
-                <path d="M63,121 A158,158 0 0,1 200,42" fill="none" stroke="#8b4513" stroke-width="22" stroke-linecap="round"/>
-                <path d="M200,200 L73,126 A148,148 0 0,1 200,52 Z" fill="#f5c842" opacity="0.9"/>
-                <circle cx="122" cy="110" r="18" fill="#c03008" opacity="0.7"/><circle cx="155" cy="80" r="13" fill="#c03008" opacity="0.6"/>
-                <circle cx="122" cy="110" r="14" fill="#8b1a0a"/><circle cx="122" cy="110" r="10" fill="#a02010"/>
-                <circle cx="155" cy="80" r="10" fill="#8b1a0a"/><circle cx="155" cy="80" r="7" fill="#a02010"/>
-                <ellipse cx="140" cy="130" rx="6" ry="10" fill="#2d8b2d" transform="rotate(30 140 130)"/>
-                <path d="M100,90 Q120,70 140,85" fill="none" stroke="#f5e060" stroke-width="2.5" opacity="0.6"/>
-                <path d="M67,126 A148,148 0 0,1 200,52" fill="none" stroke="#6b3410" stroke-width="3" stroke-dasharray="6 8" opacity="0.4"/>
-              </g>
-              <circle cx="200" cy="200" r="10" fill="#c8520a" stroke="#8b3010" stroke-width="2"/>
-              <circle cx="200" cy="200" r="5" fill="#f5b942"/>
-            </svg>
-          </div>
+      <!-- Top OutRun-style HUD -->
+      <div class="arcade-hud">
+        <div class="hud-item soc-icons">
+          <a href="https://www.instagram.com/osdc.dev/" target="_blank" class="hud-soc-link" title="Instagram">
+            <img src="assets/icons/instagram-pixel-8-bit-logo white.png" alt="IG" draggable="false">
+          </a>
+          <a href="https://discord.com/invite/D9mka7FCdB" target="_blank" class="hud-soc-link" title="Discord">
+            <img src="assets/icons/discord-pixel-8-bit-logo-white.png" alt="DC" draggable="false">
+          </a>
+          <a href="https://x.com/osdc_dev" target="_blank" class="hud-soc-link" title="Twitter">
+            <img src="assets/icons/twitter.png" alt="TW" draggable="false">
+          </a>
         </div>
-
-        <div class="menu-center-label" id="menuCenterLabel">ABOUT</div>
-        <div class="menu-center-hint">▸ ENTER ◂</div>
+        <div class="hud-item"><span class="hud-label">TIME</span> <span class="hud-value" id="hudCountdownVal">--</span></div>
+        <div class="hud-item"><span class="hud-label">EXPLORED</span> <span class="hud-value" id="hudExploredVal">00/12</span></div>
+        <div class="hud-item"><span class="hud-label">STAGE</span> <span class="hud-value" id="hudStageVal">01</span></div>
       </div>
 
-      <!-- gol chakkar js -->
-      <div id="menuOrbitPath" class="menu-orbit-path"></div>
-      <div class="menu-ring" id="menuRing">
-        <!-- idhar node aayega -->
+      <!-- Main Dashboard: Grid & Detail Panel -->
+      <div class="arcade-dashboard">
+        <!-- Left: 12-grid of modules -->
+        <div class="arcade-grid" id="arcadeGrid">
+          <!-- js se nodes aayenge -->
+        </div>
+
+        <!-- Right: Detail Panel (inspired by Hero Select) -->
+        <div class="arcade-details-panel" id="arcadeDetailsPanel">
+          <div class="details-header-border">
+            <div class="details-header">MODULE SELECT</div>
+          </div>
+          <div class="details-showcase">
+            <div class="details-icon-wrapper" id="detailsIconWrapper">
+              <!-- dynamic SVG icon -->
+            </div>
+            <div class="details-title" id="detailsTitle">REGISTER</div>
+          </div>
+          <div class="details-stats-block" id="detailsStatsBlock">
+            <!-- stats bars like PRIORITY [■■■■□] -->
+          </div>
+          <div class="details-info-box" id="detailsInfoBox">
+            <!-- info description text -->
+          </div>
+          <a class="details-action-btn" id="detailsActionBtn" href="#" target="_blank">
+            [ PRESS ENTER TO ACT ]
+          </a>
+        </div>
       </div>
 
       <!-- select prompt -->
-      <div class="menu-select-prompt">USE ← → ARROWS · ENTER TO SELECT</div>
+      <div class="menu-select-prompt">USE ARROWS ← → ↑ ↓ · ENTER TO SELECT</div>
 
-      <!-- dakaar bhai -->
-      <div id="burp-overlay">
-        <div id="burp-text">BURRRP!</div>
-        <div id="burp-sub">★ all pizza consumed ★</div>
+      <!-- retro OS-style popup system -->
+      <div class="arcade-popup-overlay" id="arcadePopupOverlay">
+        <div class="arcade-popup" id="arcadePopup">
+          <div class="popup-titlebar">
+            <span class="popup-titlebar-text" id="popupTitlebarText">MODULE</span>
+            <button class="popup-close-btn" id="popupCloseBtn">✕</button>
+          </div>
+          <div class="popup-scanlines"></div>
+          <div class="popup-body" id="popupBody">
+            <!-- content loaded dynamically -->
+          </div>
+        </div>
       </div>
 
     </div>

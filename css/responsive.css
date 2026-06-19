@@ -27,28 +27,95 @@
     border-radius: 16px / 14px;
   }
 
-  .menu-ring {
-    --ring-radius: min(24vh, 24vw, 160px);
+  /* Tablet arcade layout adjustments */
+  .arcade-hud {
+    margin-bottom: 8px;
+    padding-bottom: 6px;
   }
 
-  .menu-node-icon {
-    width: 52px;
-    height: 52px;
-    font-size: 18px;
+  .hud-item {
+    font-size: 9.5px;
+    gap: 5px;
+    padding: 3px 6px;
   }
 
-  .menu-node.selected .menu-node-icon {
-    width: 66px;
-    height: 66px;
-    font-size: 24px;
+  .hud-value {
+    font-size: 10px;
   }
 
-  .menu-node-label {
-    font-size: 4px;
+  .hud-label {
+    font-size: 7px;
   }
 
-  .menu-node.selected .menu-node-label {
-    font-size: 6px;
+  .arcade-grid {
+    gap: 8px;
+  }
+
+  .grid-node {
+    padding: 4px;
+    border-width: 1.5px;
+  }
+
+  .grid-node-icon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+  }
+
+  .grid-node-label {
+    font-size: 6.5px;
+  }
+
+  .folder-node .grid-node-label {
+    font-size: 5.5px;
+  }
+
+  .folder-node .grid-node-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .arcade-details-panel {
+    padding: 8px;
+  }
+
+  .details-showcase {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .details-icon-wrapper {
+    width: 36px;
+    height: 36px;
+  }
+
+  .details-icon-wrapper svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .details-title {
+    font-size: 11px;
+  }
+
+  .details-stats-block {
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .stat-row {
+    font-size: 6.5px;
+  }
+
+  .details-info-box {
+    font-size: 7px;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+
+  .details-action-btn {
+    padding: 4px;
+    font-size: 7.5px;
   }
 }
 
@@ -76,37 +143,117 @@
     border-radius: 14px / 12px;
   }
 
-  /* Smaller menu ring but still circular */
-  .menu-ring {
-    --ring-radius: min(20vh, 20vw, 120px);
+  /* Mobile arcade layout adjustments */
+  .arcade-hud {
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 2px double #ffd700;
   }
 
-  .menu-node-icon {
-    width: 42px;
-    height: 42px;
-    font-size: 16px;
+  .hud-item {
+    font-size: 8px;
+    gap: 3px;
+    padding: 2px 5px;
   }
 
-  .menu-node.selected .menu-node-icon {
-    width: 54px;
-    height: 54px;
-    font-size: 20px;
+  .hud-value {
+    font-size: 9px;
   }
 
-  .menu-node-label {
-    font-size: 4px;
+  .hud-label {
+    font-size: 6px;
   }
 
-  .menu-node.selected .menu-node-label {
-    font-size: 5px;
+  /* Prevent grid node scale from overflowing on mobile */
+  .grid-node.selected {
+    transform: translateY(-2px) scale(1.02);
   }
 
-  .menu-center-text {
-    font-size: clamp(8px, 3vw, 14px);
+  .arcade-dashboard {
+    flex-direction: column;
+    gap: 8px;
+    min-height: 0;
   }
 
-  .menu-center-label {
-    font-size: clamp(6px, 2vw, 10px);
+  .arcade-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+    flex: none;
+    height: auto;
+  }
+
+  .grid-node {
+    padding: 3px;
+    border-width: 1px;
+    border-radius: 3px;
+  }
+
+  .grid-node-icon {
+    width: 20px;
+    height: 20px;
+    margin-bottom: 2px;
+  }
+
+  .grid-node-label {
+    font-size: 5.5px;
+  }
+
+  .folder-node .grid-node-label {
+    font-size: 4.5px;
+  }
+
+  .folder-node .grid-node-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .arcade-details-panel {
+    padding: 6px;
+    border-width: 2px;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .details-showcase {
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+
+  .details-icon-wrapper {
+    width: 26px;
+    height: 26px;
+    border-width: 1.5px;
+  }
+
+  .details-icon-wrapper svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .details-title {
+    font-size: 9.5px;
+  }
+
+  .details-stats-block {
+    gap: 2px;
+    margin-bottom: 4px;
+    padding-bottom: 3px;
+  }
+
+  .stat-row {
+    font-size: 5.5px;
+  }
+
+  .details-info-box {
+    font-size: 6.5px;
+    line-height: 1.4;
+    margin-bottom: 4px;
+    max-height: 50px;
+  }
+
+  .details-action-btn {
+    padding: 3px;
+    font-size: 6.5px;
   }
 
   /* Smaller loading room */
@@ -148,30 +295,124 @@
     font-size: 4px;
     letter-spacing: 4px;
   }
+
+  /* Loading screen mobile */
+  .loading-screen {
+    padding: 12px;
+  }
+
+  .bios-header {
+    font-size: clamp(7px, 2vw, 10px);
+  }
+
+  .loading-console {
+    max-height: 60px;
+    min-height: 24px;
+    margin-bottom: 8px;
+  }
+
+  .pizza-tip-box {
+    padding: 6px 10px;
+    gap: 8px;
+  }
+
+  .pizza-tip-mascot {
+    width: clamp(28px, 6vw, 40px);
+  }
+
+  /* HUD social icons responsive */
+  .hud-soc-link {
+    width: 22px;
+    height: 22px;
+  }
+
+  .hud-item.soc-icons {
+    gap: 4px;
+    padding: 2px 5px;
+  }
+
+  /* Folder trace scale down to prevent overflow */
+  .folder-node:hover::before,
+  .folder-node.selected::before {
+    transform: scale(1.06);
+  }
+
+  /* Menu prompt compact */
+  .menu-select-prompt {
+    font-size: 5.5px;
+    letter-spacing: 1px;
+  }
+
+  /* Details panel on mobile */
+  .details-title {
+    font-size: 10px;
+  }
+
+  .details-icon-wrapper {
+    width: 28px;
+    height: 28px;
+  }
+
+  .details-icon-wrapper svg,
+  .details-icon-wrapper .grid-node-img {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* CRT screen transform reduce on small screens */
+  .crt-screen {
+    transform: perspective(900px) scale(1.01);
+  }
 }
 
 /* ============================================================
    VERY SMALL SCREENS (≤400px)
    ============================================================ */
 @media (max-width: 400px) {
-  .menu-ring {
-    --ring-radius: min(18vh, 18vw, 95px);
+  .grid-node-icon {
+    width: 14px;
+    height: 14px;
   }
 
-  .menu-node-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 14px;
+  .grid-node-label {
+    font-size: 4.5px;
   }
 
-  .menu-node.selected .menu-node-icon {
-    width: 46px;
-    height: 46px;
-    font-size: 18px;
+  .folder-node .grid-node-label {
+    font-size: 3.5px;
   }
 
-  .menu-node-label {
-    font-size: 3px;
+  .folder-node .grid-node-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .details-stats-block {
+    display: none;
+  }
+
+  .details-info-box {
+    font-size: 5.5px;
+    max-height: 40px;
+  }
+
+  .details-action-btn {
+    padding: 2px;
+    font-size: 5.5px;
+  }
+
+  .details-title {
+    font-size: 8px;
+  }
+
+  .details-icon-wrapper {
+    width: 20px;
+    height: 20px;
+  }
+
+  .details-showcase {
+    gap: 4px;
+    margin-bottom: 3px;
   }
 
   .crt-monitor {
@@ -183,6 +424,149 @@
   .crt-screen {
     inset: 4px;
     border-radius: 10px;
+    transform: perspective(900px) scale(1);
+  }
+
+  /* Loading screen ultra compact */
+  .bios-header {
+    font-size: 7px;
+    margin-bottom: 3px;
+  }
+
+  .bios-separator {
+    margin-bottom: 6px;
+    font-size: 5px;
+  }
+
+  .boot-checks {
+    margin-bottom: 8px;
+    gap: 2px;
+  }
+
+  .loading-section {
+    margin-bottom: 6px;
+  }
+
+  .loading-arcade-label {
+    font-size: 7px;
+    gap: 4px;
+  }
+
+  .loading-arcade-label .pizza-icon {
+    display: none;
+  }
+
+  .pizza-segment {
+    width: 12px;
+    height: 12px;
+    font-size: 9px;
+  }
+
+  .pizza-bar-percent {
+    font-size: 10px;
+    min-width: 36px;
+  }
+
+  .loading-console {
+    max-height: 40px;
+    min-height: 16px;
+    margin-bottom: 6px;
+  }
+
+  .pizza-tip-box {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 4px 8px;
+  }
+
+  .pizza-tip-mascot {
+    width: 24px;
+  }
+
+  .pizza-tip-mascot-fallback {
+    font-size: 20px;
+  }
+
+  .pizza-tip-label {
+    font-size: 4px;
+  }
+
+  .pizza-tip-text {
+    font-size: 4px;
+    min-height: 16px;
+  }
+
+  /* HUD wrap / compress */
+  .arcade-hud {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 4px;
+    padding-bottom: 3px;
+  }
+
+  .hud-item {
+    font-size: 6.5px;
+    padding: 1px 4px;
+    gap: 2px;
+  }
+
+  .hud-soc-link {
+    width: 18px;
+    height: 18px;
+  }
+
+  .hud-item.soc-icons {
+    gap: 3px;
+    padding: 1px 3px;
+  }
+
+  .hud-value {
+    font-size: 7px;
+  }
+
+  .hud-label {
+    font-size: 5px;
+  }
+
+  /* Folder trace minimal */
+  .folder-node:hover::before,
+  .folder-node.selected::before {
+    transform: scale(1.03);
+  }
+
+  .menu-select-prompt {
+    font-size: 4.5px;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+
+  /* Start screen compact */
+  .press-start-text {
+    font-size: 7px;
+    padding: 6px 12px;
+    bottom: 8%;
+  }
+
+  .floating-mascot {
+    width: 32px;
+    right: 3%;
+    bottom: 10%;
+  }
+
+  .logo-image {
+    width: clamp(120px, 80vw, 200px);
+  }
+
+  .logo-text-fallback {
+    font-size: 14px;
+  }
+
+  .start-tagline {
+    font-size: 3.5px;
+    letter-spacing: 2px;
+    bottom: 14%;
   }
 }
 
@@ -190,8 +574,68 @@
    LANDSCAPE PHONE
    ============================================================ */
 @media (max-height: 500px) and (orientation: landscape) {
-  .menu-ring {
-    --ring-radius: min(30vh, 18vw, 130px);
+  .arcade-dashboard {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .arcade-grid {
+    gap: 4px;
+  }
+
+  .grid-node {
+    padding: 3px;
+  }
+
+  .grid-node-icon {
+    width: 18px;
+    height: 18px;
+    margin-bottom: 2px;
+  }
+
+  .grid-node-label {
+    font-size: 5.5px;
+  }
+
+  .folder-node .grid-node-label {
+    font-size: 4px;
+  }
+
+  .folder-node .grid-node-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .folder-node:hover::before,
+  .folder-node.selected::before {
+    transform: scale(1.06);
+  }
+
+  .details-stats-block {
+    display: none;
+  }
+
+  .details-info-box {
+    font-size: 6px;
+    max-height: 60px;
+  }
+
+  .details-showcase {
+    margin-bottom: 4px;
+  }
+
+  .details-icon-wrapper {
+    width: 22px;
+    height: 22px;
+  }
+
+  .details-title {
+    font-size: 8px;
+  }
+
+  .details-action-btn {
+    padding: 3px;
+    font-size: 6px;
   }
 
   .loading-title {
@@ -208,5 +652,154 @@
 
   .press-start-text {
     margin-top: 10px;
+  }
+
+  /* Loading screen landscape */
+  .loading-screen {
+    padding: 8px 16px;
+  }
+
+  .bios-header {
+    font-size: clamp(6px, 1.5vh, 10px);
+    margin-bottom: 3px;
+  }
+
+  .bios-separator {
+    margin-bottom: 4px;
+  }
+
+  .boot-checks {
+    margin-bottom: 6px;
+    gap: 2px;
+  }
+
+  .loading-section {
+    margin-bottom: 4px;
+  }
+
+  .loading-arcade-label {
+    margin-bottom: 4px;
+    font-size: clamp(6px, 1.8vh, 10px);
+    gap: 4px;
+  }
+
+  .loading-arcade-label .pizza-icon {
+    font-size: 10px;
+  }
+
+  .pizza-bar-track {
+    padding: 3px 5px;
+  }
+
+  .pizza-segment {
+    width: 14px;
+    height: 14px;
+    font-size: 10px;
+  }
+
+  .pizza-bar-percent {
+    font-size: 10px;
+    min-width: 36px;
+  }
+
+  .loading-console {
+    max-height: 40px;
+    min-height: 20px;
+    margin-bottom: 4px;
+  }
+
+  .pizza-tip-box {
+    padding: 4px 8px;
+    gap: 6px;
+  }
+
+  .pizza-tip-mascot {
+    width: 24px;
+  }
+
+  .pizza-tip-mascot-fallback {
+    font-size: 18px;
+  }
+
+  .pizza-tip-label {
+    font-size: 4px;
+  }
+
+  .pizza-tip-text {
+    font-size: 4px;
+    min-height: 16px;
+  }
+
+  .loading-footer {
+    font-size: 3.5px;
+  }
+
+  /* Start screen landscape */
+  .start-tagline {
+    bottom: 15%;
+    font-size: 3px;
+    letter-spacing: 3px;
+  }
+
+  .press-start-text {
+    bottom: 6%;
+    margin-top: 5px;
+    padding: 6px 12px;
+    font-size: 7px;
+    letter-spacing: 3px;
+  }
+
+  .floating-mascot {
+    width: 40px;
+    bottom: 12%;
+  }
+
+  .logo-image {
+    width: clamp(250px, 50vw, 400px);
+  }
+
+  .logo-text-fallback {
+    font-size: clamp(14px, 3vw, 22px);
+  }
+
+  /* HUD landscape */
+  .arcade-hud {
+    margin-bottom: 4px;
+    padding-bottom: 3px;
+  }
+
+  .hud-item {
+    font-size: 6px;
+    padding: 1px 4px;
+    gap: 2px;
+  }
+
+  .hud-soc-link {
+    width: 16px;
+    height: 16px;
+  }
+
+  .hud-item.soc-icons {
+    gap: 3px;
+    padding: 1px 3px;
+  }
+
+  .hud-value {
+    font-size: 7px;
+    letter-spacing: 1px;
+  }
+
+  .hud-label {
+    font-size: 5px;
+  }
+
+  .menu-select-prompt {
+    font-size: 5px;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+
+  .crt-screen {
+    transform: perspective(900px) scale(1.01);
   }
 }

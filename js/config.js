@@ -107,14 +107,186 @@ const CONFIG = {
    * The circle automatically distributes them evenly.
    */
   menuItems: [
-    { id: 'about', label: 'ABOUT', icon: '📖', color: '#39ff14' },
-    { id: 'tracks', label: 'TRACKS', icon: '🏁', color: '#39ff14' },
-    { id: 'rules', label: 'RULES', icon: '📋', color: '#39ff14' },
-    { id: 'sponsole', label: 'SPONSOLE', icon: '📅', color: '#39ff14' },
-    { id: 'prizes', label: 'PRIZES', icon: '🏆', color: '#39ff14' },
-    { id: 'team', label: 'TEAM', icon: '👥', color: '#39ff14' },
-    { id: 'topics', label: 'TOPICS', icon: '💡', color: '#39ff14' },
-    { id: 'faq', label: 'FAQ', icon: '❓', color: '#39ff14' },
+    {
+      id: 'register',
+      label: 'REGISTER',
+      color: '#f1c40f',
+      stats: { priority: 5, complexity: 1, rewards: 5 },
+      info: 'Ready to hack? Assemble your team of 1-4 players and register now to claim your spot in the arcade arena. Space is limited!',
+      actionText: 'START REGISTRATION',
+      actionLink: '#',
+      popup: {
+        title: 'START REGISTRATION',
+        body: '<div class="popup-section"><div class="popup-section-title">Who Can Participate?</div><p>Participation is open for everyone, whether you are a College Student or a Working Professional.</p></div><div class="popup-section"><div class="popup-section-title">Registration Link</div><a class="popup-link" href="https://hack.osdc.dev/register" target="_blank">hack.osdc.dev/register</a></div>'
+      },
+      iconPath: 'assets/icons/passport.png'
+    },
+    {
+      id: 'dates',
+      label: 'DATES',
+      color: '#e74c3c',
+      stats: { importance: 5, urgency: 4, reading: 1 },
+      info: 'Don\'t miss a beat! Keep track of key dates: Registration deadline, opening ceremony, coding sprints, and project submission deadlines.',
+      actionText: 'SAVE DATES',
+      actionLink: '#',
+      popup: {
+        title: 'SAVE THE DATES',
+        body: '<div class="popup-section"><div class="popup-section-title">Hackathon Dates</div><span class="popup-dates">10 July (6:00 PM) → 15 July (6:00 PM)</span></div>'
+      },
+      iconPath: 'assets/icons/calendar.png'
+    },
+    {
+      id: 'remote',
+      label: 'REMOTE',
+      color: '#2ecc71',
+      stats: { flexibility: 5, collaboration: 4, attendance: 3 },
+      info: 'OSDHACK\'26 is hybrid! Join us physically at the main arcade venue or code remotely from anywhere in the universe with full Discord support.',
+      actionText: 'JOIN DISCORD',
+      actionLink: 'https://discord.com/invite/jiit-open-source-developer-s-community-475154983910899722',
+      iconPath: 'assets/icons/location (1).png'
+    },
+    {
+      id: 'rulebook',
+      label: 'RULEBOOK',
+      color: '#1abc9c',
+      stats: { necessity: 5, strictness: 4, clarity: 5 },
+      info: 'Read the rules before you start. Covers team formation, code repositories, intellectual property rights, and fair play guidelines.',
+      actionText: 'OPEN HANDBOOK',
+      actionLink: '#',
+      popup: {
+        title: 'OPEN HANDBOOK',
+        body: '<ol class="popup-rules"><li>Registration Deadline: 10 July, 2026, 06:00 PM</li><li>Team Composition: Solo or teams of up to 4 people.</li><li>Project Type: Build any software or hardware project following the On-Device AI theme.</li><li>Version Control: Use Git with a public repository.</li><li>Commit Timeline: All code must be written and committed during the hackathon.</li><li>Open Source: Projects must use an OSI-compliant FOSS license.</li><li>External Code: Open-source libraries/assets are allowed with proper attribution.</li><li>Originality: Projects must be original and not previously submitted.</li><li>Submission Platform: Submit on Unstop with repo link, description, and demo.</li><li>Discord Participation: Join the official Discord server for announcements and mini-events.</li><li>Rule Enforcement: Violations may lead to disqualification.</li><li>Plagiarism: Strictly prohibited.</li><li>Organizing Authority: The organizing team\'s decisions are final.</li></ol><div class="popup-rules-footer">Follow the rules. Embrace the chaos. Have fun!</div>'
+      },
+      iconPath: 'assets/icons/notes.png'
+    },
+    {
+      id: 'timeline',
+      label: 'TIMELINE',
+      color: '#3498db',
+      stats: { duration: 5, intensity: 5, focus: 4 },
+      info: 'The official 48-hour schedule. T-minus starts soon! Tracks kickoffs, mentoring feedback slots, workshops, and presentation showcases.',
+      actionText: 'VIEW SCHEDULE',
+      actionLink: '#',
+      popup: {
+        title: 'VIEW SCHEDULE',
+        body: '<div class="popup-section"><div class="popup-section-title">Timeline</div><ul class="popup-list"><li><strong>Opening Ceremony</strong> — July 10 (5:00 PM)</li><li><strong>Hacking Period</strong> — July 10 (6:00 PM) to July 15 (6:00 PM)</li><li><strong>Final Submission Deadline</strong> — July 15 (6:00 PM)</li></ul></div><div class="popup-section"><div class="popup-section-title">Mini Events</div><ul class="popup-list"><li><strong>Speed Typing</strong> — TBD</li><li><strong>Capture The Flag</strong> — TBD</li><li><strong>CodeBattleships</strong> — TBD</li></ul></div>'
+      },
+      iconPath: 'assets/icons/clock.png'
+    },
+    {
+      id: 'theme',
+      label: 'THEME',
+      color: '#9b59b6',
+      stats: { creativity: 5, nostalgia: 5, hype: 5 },
+      info: 'The thematic wrapper for OSDHACK\'26. Think nostalgia, cabinet retro graphics, and pizza! Unleash your inner 80s arcade dev.',
+      actionText: 'REVEAL SECRET',
+      actionLink: '#',
+      popup: {
+        title: 'REVEAL THEME',
+        body: '<div class="popup-section"><div class="popup-section-title">On-Device AI</div><p>Build smart software that lives on your device. Create privacy-friendly, offline-ready, lightweight AI projects that run locally on phones, laptops, browsers, edge devices, or embedded systems — no cloud dependency for the core magic.</p></div><div class="popup-section"><div class="popup-section-title">Examples</div><ul class="popup-list"><li>A browser tool that works offline</li><li>A privacy-friendly productivity app</li><li>An AI-powered accessibility tool</li><li>An embedded device that makes smart decisions without cloud access</li></ul></div><div class="popup-ending">Surprise us with your creativity!</div>'
+      },
+      iconPath: 'assets/icons/color-wheel.png'
+    },
+    {
+      id: 'prizes',
+      label: 'PRIZES',
+      color: '#f39c12',
+      stats: { bounty: 5, loot: 5, swag: 4 },
+      info: 'Total bounty worth $10,000! Top teams win retro game cabinets, custom keycaps, mech keyboards, and cool custom swag bags.',
+      actionText: 'VIEW BOUNTIES',
+      actionLink: '#',
+      popup: {
+        title: 'VIEW BOUNTIES',
+        body: '<div class="popup-section"><div class="popup-section-title">🏆 Hackathon Prizes</div><ul class="popup-list"><li>₹15,000 in Cash</li><li>Over ₹1,00,000 worth of CodeCrafters VIP Memberships</li><li>.xyz Domains</li><li>Goodies</li></ul></div><div class="popup-section"><div class="popup-section-title">🎮 Mini-Events Prizes</div><ul class="popup-list"><li>₹3,000 in Cash</li><li>Goodies</li></ul></div><div class="popup-rules-footer">Bring your best ideas to life and walk away with glory (and cash).</div>'
+      },
+      iconPath: 'assets/icons/stack-of-bills.png'
+    },
+    {
+      id: 'downloadAssets',
+      label: 'DOWNLOAD ASSETS',
+      color: '#f39c12',
+      stats: { utility: 5, variety: 4, size: 2 },
+      info: 'Snag the official OSDHACK\'26 asset bundle: retro graphics, pixelated sound effects, color palette codes, and brand templates.',
+      actionText: 'GET ASSETS PACK',
+      actionLink: '#',
+      iconPath: 'assets/icons/folder.png'
+    },
+    {
+      id: 'speedTyping',
+      label: 'SPEED TYPING',
+      color: '#34495e',
+      stats: { difficulty: 3, reflex: 5, fun: 5 },
+      info: 'Compete in the side-quest typing tournament. Test your word-per-minute speed under pressure and top the global arcade leaderboard!',
+      actionText: 'ABOUT SPEED TYPING',
+      actionLink: '#',
+      popup: {
+        title: 'SPEED TYPING CHALLENGE',
+        body: '<p>Put your fingers to the test! A lightning-fast keyboard showdown where speed meets style.</p><div class="popup-section"><div class="popup-section-title">Timeline</div><ul class="popup-list"><li><strong>Session 1</strong> → 12 July (12:00 PM - 1:00 PM)</li><li><strong>Session 2</strong> → 13 July (12:00 PM - 1:00 PM)</li><li><strong>Finals</strong> → 13 July (7:00 PM)</li></ul></div><div class="popup-section"><div class="popup-section-title">Rules</div><ul class="popup-list"><li>Participants will be given random text to type.</li><li>Accuracy and speed both count.</li><li>Top performers from the sessions qualify for finals.</li></ul></div><div class="popup-rules-footer">Type like the wind and leave the rest in the dust!</div>'
+      },
+      iconPath: 'assets/icons/geek.png'
+    },
+    {
+      id: 'captureTheFlag',
+      label: 'CAPTURE THE FLAG',
+      color: '#e74c3c',
+      stats: { difficulty: 4, cyber: 5, rewards: 5 },
+      info: 'A parallel cybersecurity contest. Hack, patch, and capture target flags in reverse engineering, cryptography, and web security.',
+      actionText: 'ABOUT CTF',
+      actionLink: '#',
+      popup: {
+        title: 'CAPTURE THE FLAG (CTF)',
+        body: '<p>It\'s not just a game—it\'s a digital battlefield. Solve puzzles, crack codes, and snag the flag in this mini-CTF.</p><div class="popup-section"><div class="popup-section-title">Event Timeline</div><ul class="popup-list"><li><strong>Starts:</strong> 12 July at 5:00 PM</li><li><strong>Ends:</strong> 13 July at 5:00 PM</li></ul></div><div class="popup-section"><div class="popup-section-title">Challenge Categories</div><ul class="popup-list"><li>Cryptography</li><li>Web Exploitation</li><li>Forensics</li><li>OSINT</li><li>General Skills</li><li>Miscellaneous</li></ul></div><div class="popup-section"><div class="popup-section-title">Rules</div><ul class="popup-list"><li>Team-based CTF</li><li>Flags must be submitted in the correct format.</li><li>Most points wins.</li></ul></div><div class="popup-rules-footer">Equal parts fun and challenge, ready to test your skills?</div>'
+      },
+      iconPath: 'assets/icons/flag.png'
+    },
+    {
+      id: 'tracks',
+      label: 'TRACKS',
+      color: '#e040fb',
+      stats: { tracks: 4, diversity: 5, innovation: 5 },
+      info: 'Explore the four hacking tracks: 1) Web3 Cabinets, 2) AI Retro Agents, 3) Open-Source Arcade emulator, 4) Creative Hardware hacks.',
+      actionText: 'READ TRACK DETAILS',
+      actionLink: '#',
+      iconPath: 'assets/icons/launch.png'
+    },
+    {
+      id: 'faqs',
+      label: 'FAQs',
+      color: '#00e5ff',
+      stats: { quantity: 5, help: 5, clarity: 4 },
+      info: 'Answers to all your burning questions: team sizes, hardware allowance, food schedules (yes, there is pizza!), and online setup.',
+      actionText: 'OPEN FAQ CENTER',
+      actionLink: '#',
+      popup: {
+        title: 'FAQ CENTER',
+        body: '<div style="text-align:center;padding:20px 0"><div style="font-size:12px;color:#00e5ff;margin-bottom:12px;text-shadow:0 0 8px rgba(0,229,255,0.4)">Transmission pending...</div><div style="font-size:10px;color:rgba(255,253,236,0.6);line-height:2">FAQ database is currently under construction.</div><div style="margin-top:16px;font-size:16px;animation:popupTraceMove 1.5s linear infinite;display:inline-block">⚙️</div></div>'
+      },
+      iconPath: 'assets/icons/caution.png'
+    },
+    {
+      id: 'games',
+      label: 'GAMES',
+      color: '#e040fb',
+      stats: { fun: 5, challenge: 4, rewards: 5 },
+      info: 'Take a break and play some retro arcade mini-games between coding sessions. Compete for high scores and bragging rights!',
+      actionText: 'PLAY ARCADE',
+      actionLink: '#',
+      iconPath: 'assets/icons/geek.png'
+    },
+    {
+      id: 'sponsors',
+      label: 'SPONSORS',
+      color: '#b388ff',
+      stats: { partners: 4, support: 5, swag: 5 },
+      info: 'A huge thanks to our amazing sponsors who make OSDHACK possible. Check out their booths, grab swag, and learn about opportunities.',
+      actionText: 'VIEW SPONSORS',
+      actionLink: '#',
+      popup: {
+        title: 'OUR SPONSORS',
+        body: '<p>A huge thanks to our amazing sponsors who make OSDHACK possible. Check out their booths, grab swag, and learn about opportunities.</p><div class="popup-section"><div class="popup-section-title">Our Partners</div><div class="sponsor-logos"><div class="sponsor-logo-item"><img src="assets/icons/codecrafters.png" alt="CodeCrafters" class="sponsor-logo-img"><span class="sponsor-logo-label">CodeCrafters</span></div><div class="sponsor-logo-item"><img src="assets/icons/xyz_logo (1).svg" alt=".xyz" class="sponsor-logo-img"><span class="sponsor-logo-label">.xyz</span></div></div></div>'
+      },
+      iconPath: 'assets/icons/suit.png'
+    }
   ],
 
   /* ---- LOADING SCREEN FACTS ----
