@@ -1,0 +1,34 @@
+.cinematic-container {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    background: #000;
+  }
+  
+  .cinematic-container video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: none;
+  }
+  
+  #phase1Video {
+    opacity: 1;
+  }
+  
+  .website-container {
+    display: none;
+    opacity: 0;
+    transition: opacity 600ms ease;
+  }
+  
+  .website-container.visible {
+    display: block;
+  }
+  
+  .website-container.fade-in {
+    opacity: 1;
+  }

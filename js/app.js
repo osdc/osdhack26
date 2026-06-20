@@ -20,53 +20,86 @@
 (function () {
   'use strict';
 
-  document.addEventListener('DOMContentLoaded', async () => {
+  document.addEventListener('DOMContentLoaded', () => {
 
-    /* ---- SET PAGE TITLE FROM CONFIG ---- */
-    document.title = CONFIG.title + ' — Arcade Hackathon';
+    /* ---- CUTSCENE ---- */
+    const cinematic = document.getElementById('cinematic');
+    const website   = document.querySelector('.website-container');
+    const v1        = document.getElementById('phase1Video');
+    const v2        = document.getElementById('loopVideo');
+    const v3        = document.getElementById('phase3Video');
 
-    /* ---- INIT AUDIO (stays muted until user toggles) ---- */
-    Audio.init();
+    let onLoop       = false;
+    let cutsceneDone = false;
 
-    /* ---- INIT GAMEPAD POLLING ---- */
-    Gamepad.start();
-
-    /* ---- BIND SFX TOGGLE BUTTON ---- */
-    const sfxBtn = Utils.$('sfxToggle');
-    if (sfxBtn) {
-      sfxBtn.addEventListener('click', () => {
-        Audio.unlock();
-        const muted = Audio.toggleMute();
-        sfxBtn.classList.toggle('muted', muted);
-        sfxBtn.textContent = muted ? '🔇 SFX' : '🔊 SFX';
-        
-        if (!muted) {
-          Audio.playHover();
-          Audio.playAmbient(); // Start looping theme
-        } else {
-          Audio.stopAmbient(); // Stop theme if muted
-        }
-      });
+    function show(to, from) {
+      to.currentTime = 0;
+      to.play();
+      to.style.opacity = '1';
+      if (from) requestAnimationFrame(() => { from.style.opacity = '0'; });
     }
 
-    /* ============================================================
-     * SCREEN FLOW CHAIN
-     * Each screen calls the next when it finishes.
-     * ============================================================ */
+    v1.addEventListener('ended', () => {
+      onLoop = true;
+      show(v2, v1);
+    }, { once: true });
 
-    /* Step 1: CRT Power-On Boot */
-    await CRT.boot();
+    function onSpace(e) {
+      if (e.code !== 'Space') return;
+      if (!onLoop) return;
+      onLoop = false;
+      v2.loop = false;
+      show(v3, v2);
+      window.removeEventListener('keydown', onSpace);
+    }
+    window.addEventListener('keydown', onSpace);
 
-    /* Step 2: Loading Screen */
-    LoadingScreen.start(() => {
+    // phase3 - go to website
+    v3.addEventListener('ended', () => {
+      if (cutsceneDone) return;
+      cutsceneDone = true;
 
-      /* Step 3: Press Start Screen */
-      StartScreen.show(() => {
+      website.classList.add('visible');
 
-        /* Step 4: Main Menu */
-        MenuScreen.show();
+      // boot everything while cinematic still covers
+      document.title = CONFIG.title + ' — Arcade Hackathon';
+      Audio.init();
+      Gamepad.start();
+
+      const sfxBtn = Utils.$('sfxToggle');
+      if (sfxBtn) {
+        sfxBtn.addEventListener('click', () => {
+          Audio.unlock();
+          const muted = Audio.toggleMute();
+          sfxBtn.classList.toggle('muted', muted);
+          sfxBtn.textContent = muted ? '🔇 SFX' : '🔊 SFX';
+          if (!muted) { Audio.playHover(); Audio.playAmbient(); }
+          else { Audio.stopAmbient(); }
+        });
+      }
+
+      // paint website first, then crossfade cinematic out
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          cinematic.style.transition = 'opacity 600ms ease';
+          cinematic.style.opacity    = '0';
+          website.classList.add('fade-in');
+
+          cinematic.addEventListener('transitionend', () => {
+            cinematic.remove();
+          }, { once: true });
+
+          CRT.boot().then(() => {
+            LoadingScreen.start(() => {
+              StartScreen.show(() => {
+                MenuScreen.show();
+              });
+            });
+          });
+        });
       });
-    });
+
+    }, { once: true });
 
   });
 })();
