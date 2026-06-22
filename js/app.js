@@ -16,7 +16,6 @@
  *   All behavior is driven by CONFIG. No changes needed here
  *   unless you want to alter the screen flow order.
  * ============================================================ */
-
 (function () {
   'use strict';
 
@@ -29,28 +28,41 @@
     const v2        = document.getElementById('loopVideo');
     const v3        = document.getElementById('phase3Video');
 
-    let onLoop       = false;
+    let phase        = 'phase1';
     let cutsceneDone = false;
 
     function show(to, from) {
       to.currentTime = 0;
       to.play();
-      to.style.opacity = '1';
-      if (from) requestAnimationFrame(() => { from.style.opacity = '0'; });
+      requestAnimationFrame(() => {
+        to.style.opacity = '1';
+        if (from) {
+          to.addEventListener('transitionend', () => {
+            from.style.opacity = '0';
+          }, { once: true });
+        }
+      });
+    }
+
+    function goToPhase3() {
+      if (phase === 'phase3' || phase === 'done') return;
+      const from = phase === 'loop' ? v2 : v1;
+      phase = 'phase3';
+      v2.loop = false;
+      v2.pause();
+      show(v3, from);
     }
 
     v1.addEventListener('ended', () => {
-      onLoop = true;
+      if (phase !== 'phase1') return;
+      phase = 'loop';
       show(v2, v1);
     }, { once: true });
 
     function onSpace(e) {
       if (e.code !== 'Space') return;
-      if (!onLoop) return;
-      onLoop = false;
-      v2.loop = false;
-      show(v3, v2);
       window.removeEventListener('keydown', onSpace);
+      goToPhase3();
     }
     window.addEventListener('keydown', onSpace);
 
@@ -58,6 +70,7 @@
     v3.addEventListener('ended', () => {
       if (cutsceneDone) return;
       cutsceneDone = true;
+      phase = 'done';
 
       website.classList.add('visible');
 
@@ -77,7 +90,7 @@
           else { Audio.stopAmbient(); }
         });
       }
-
+      
       // paint website first, then crossfade cinematic out
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
