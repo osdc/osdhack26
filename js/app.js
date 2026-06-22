@@ -50,6 +50,7 @@
       phase = 'phase3';
       v2.loop = false;
       v2.pause();
+      document.querySelector(".press-space").style.opacity = 0;
       show(v3, from);
     }
 
@@ -57,6 +58,9 @@
       if (phase !== 'phase1') return;
       phase = 'loop';
       show(v2, v1);
+      setTimeout(() => {
+        document.querySelector(".press-space").style.display = "block";
+    }, 4000);
     }, { once: true });
 
     function onSpace(e) {
