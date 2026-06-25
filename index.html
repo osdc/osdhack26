@@ -51,6 +51,10 @@
       overflow: hidden;
       background: #000;
       font-family: 'Press Start 2P', monospace;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
 
     body {
@@ -311,15 +315,18 @@
       <!-- select prompt -->
       <div class="menu-select-prompt">USE ARROWS ← → ↑ ↓ · ENTER TO SELECT</div>
 
-      <!-- retro OS-style popup system -->
-      <div class="arcade-popup-overlay" id="arcadePopupOverlay">
-        <div class="arcade-popup" id="arcadePopup">
-          <div class="popup-titlebar">
-            <span class="popup-titlebar-text" id="popupTitlebarText">MODULE</span>
-            <button class="popup-close-btn" id="popupCloseBtn">✕</button>
+      <!-- retro OS-style modal system -->
+      <div class="arcade-modal-overlay" id="arcadeModalOverlay">
+        <div class="arcade-modal" id="arcadeModal">
+          <div class="modal-border-trace"></div>
+          <div class="modal-scanlines"></div>
+          <div class="modal-glow"></div>
+          <div class="modal-flicker"></div>
+          <div class="modal-titlebar">
+            <span class="modal-titlebar-text" id="modalTitlebarText">MODULE</span>
+            <button class="modal-close-btn" id="modalCloseBtn">✕</button>
           </div>
-          <div class="popup-scanlines"></div>
-          <div class="popup-body" id="popupBody">
+          <div class="modal-body" id="modalBody">
             <!-- content loaded dynamically -->
           </div>
         </div>

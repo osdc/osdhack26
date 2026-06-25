@@ -117,7 +117,7 @@ const CONFIG = {
       actionLink: '#',
       popup: {
         title: 'START REGISTRATION',
-        body: '<div class="popup-section"><div class="popup-section-title">Who Can Participate?</div><p>Participation is open for everyone, whether you are a College Student or a Working Professional.</p></div><div class="popup-section"><div class="popup-section-title">Registration Link</div><a class="popup-link" href="https://hack.osdc.dev/register" target="_blank">hack.osdc.dev/register</a></div>'
+        body: '<div class="modal-section"><div class="modal-section-title">Who Can Participate?</div><p>Participation is open for everyone, whether you are a College Student or a Working Professional.</p></div><div class="modal-section"><div class="modal-section-title">Registration Link</div><a class="modal-retro-btn" href="https://hack.osdc.dev/register" target="_blank">hack.osdc.dev/register</a></div>'
       },
       iconPath: 'assets/icons/passport.png'
     },
@@ -131,7 +131,7 @@ const CONFIG = {
       actionLink: '#',
       popup: {
         title: 'SAVE THE DATES',
-        body: '<div class="popup-section"><div class="popup-section-title">Hackathon Dates</div><span class="popup-dates">10 July (6:00 PM) → 15 July (6:00 PM)</span></div>'
+        body: '<img class="modal-calendar-icon" src="assets/icons/calendar.png" alt="calendar" draggable="false"><div class="modal-section"><div class="modal-section-title">Hackathon Dates</div><p style="text-align:center;font-size:10px;line-height:2">11 July, 7:00 PM<br><span style="color:#ffd700;font-size:14px">↓</span><br>13 July, 11:59 PM</p></div>'
       },
       iconPath: 'assets/icons/calendar.png'
     },
@@ -142,7 +142,11 @@ const CONFIG = {
       stats: { flexibility: 5, collaboration: 4, attendance: 3 },
       info: 'OSDHACK\'26 is hybrid! Join us physically at the main arcade venue or code remotely from anywhere in the universe with full Discord support.',
       actionText: 'JOIN DISCORD',
-      actionLink: 'https://discord.com/invite/jiit-open-source-developer-s-community-475154983910899722',
+      actionLink: '#',
+      popup: {
+        title: 'JOIN REMOTE',
+        body: '<div class="modal-section"><div class="modal-section-title">Hybrid Participation</div><p>OSDHACK\'26 is fully hybrid! You can participate from anywhere in the world.</p></div><div class="modal-section"><div class="modal-section-title">Join Our Discord</div><a class="modal-retro-btn" href="https://discord.com/invite/jiit-open-source-developer-s-community-475154983910899722" target="_blank">discord.gg/jiit-osdc</a></div>'
+      },
       iconPath: 'assets/icons/location (1).png'
     },
     {
@@ -154,8 +158,8 @@ const CONFIG = {
       actionText: 'OPEN HANDBOOK',
       actionLink: '#',
       popup: {
-        title: 'OPEN HANDBOOK',
-        body: '<ol class="popup-rules"><li>Registration Deadline: 10 July, 2026, 06:00 PM</li><li>Team Composition: Solo or teams of up to 4 people.</li><li>Project Type: Build any software or hardware project following the On-Device AI theme.</li><li>Version Control: Use Git with a public repository.</li><li>Commit Timeline: All code must be written and committed during the hackathon.</li><li>Open Source: Projects must use an OSI-compliant FOSS license.</li><li>External Code: Open-source libraries/assets are allowed with proper attribution.</li><li>Originality: Projects must be original and not previously submitted.</li><li>Submission Platform: Submit on Unstop with repo link, description, and demo.</li><li>Discord Participation: Join the official Discord server for announcements and mini-events.</li><li>Rule Enforcement: Violations may lead to disqualification.</li><li>Plagiarism: Strictly prohibited.</li><li>Organizing Authority: The organizing team\'s decisions are final.</li></ol><div class="popup-rules-footer">Follow the rules. Embrace the chaos. Have fun!</div>'
+        title: 'Official Handbook',
+        body: '<div class="modal-section"><ol style="padding-left:20px"><li><strong>Registration Deadline:</strong> 10 July, 2026, 06:00 PM</li><li><strong>Team Composition:</strong> Solo or teams of up to 4 people.</li><li><strong>Project Type:</strong> Build any software or hardware project following the On-Device AI theme.</li><li><strong>Version Control:</strong> Use Git with a public repository.</li><li><strong>Commit Timeline:</strong> All code must be written and committed during the hackathon.</li><li><strong>Open Source:</strong> Projects must use an OSI-compliant FOSS license.</li><li><strong>External Code:</strong> Open-source libraries/assets are allowed with proper attribution.</li><li><strong>Originality:</strong> Projects must be original and not previously submitted.</li><li><strong>Submission Platform:</strong> Submit on Unstop with repo link, description, and demo.</li><li><strong>Discord Participation:</strong> Join the official Discord server for announcements and mini-events.</li><li><strong>Rule Enforcement:</strong> Violations may lead to disqualification.</li><li><strong>Plagiarism:</strong> Strictly prohibited.</li><li><strong>Organizing Authority:</strong> The organizing team&#39;s decisions are final.</li></ol></div><div class="modal-ending">Follow the rules. Embrace the chaos. Have fun!</div>'
       },
       iconPath: 'assets/icons/notes.png'
     },
@@ -168,8 +172,8 @@ const CONFIG = {
       actionText: 'VIEW SCHEDULE',
       actionLink: '#',
       popup: {
-        title: 'VIEW SCHEDULE',
-        body: '<div class="popup-section"><div class="popup-section-title">Timeline</div><ul class="popup-list"><li><strong>Opening Ceremony</strong> — July 10 (5:00 PM)</li><li><strong>Hacking Period</strong> — July 10 (6:00 PM) to July 15 (6:00 PM)</li><li><strong>Final Submission Deadline</strong> — July 15 (6:00 PM)</li></ul></div><div class="popup-section"><div class="popup-section-title">Mini Events</div><ul class="popup-list"><li><strong>Speed Typing</strong> — TBD</li><li><strong>Capture The Flag</strong> — TBD</li><li><strong>CodeBattleships</strong> — TBD</li></ul></div>'
+        title: 'Timeline',
+        body: '<div class="modal-section"><div class="modal-section-title">Timeline</div><ul><li><strong>Opening Ceremony</strong><br>July 10 (5:00 PM)</li><li><strong>Hacking Period</strong><br>July 10 (6:00 PM)<br><span style="color:#ffd700;font-size:12px">↓</span><br>July 15 (6:00 PM)</li><li><strong>Final Submission</strong><br>July 15 (6:00 PM)</li></ul></div><div class="modal-section"><div class="modal-section-title">Mini Events</div><ul><li>Speed Typing — TBD</li><li>Capture The Flag — TBD</li><li>CodeBattleships — TBD</li></ul></div>'
       },
       iconPath: 'assets/icons/clock.png'
     },
@@ -182,8 +186,8 @@ const CONFIG = {
       actionText: 'REVEAL SECRET',
       actionLink: '#',
       popup: {
-        title: 'REVEAL THEME',
-        body: '<div class="popup-section"><div class="popup-section-title">On-Device AI</div><p>Build smart software that lives on your device. Create privacy-friendly, offline-ready, lightweight AI projects that run locally on phones, laptops, browsers, edge devices, or embedded systems — no cloud dependency for the core magic.</p></div><div class="popup-section"><div class="popup-section-title">Examples</div><ul class="popup-list"><li>A browser tool that works offline</li><li>A privacy-friendly productivity app</li><li>An AI-powered accessibility tool</li><li>An embedded device that makes smart decisions without cloud access</li></ul></div><div class="popup-ending">Surprise us with your creativity!</div>'
+        title: 'On-Device AI',
+        body: '<div class="modal-section"><div class="modal-section-title">On-Device AI</div><p>Build smart software that lives on your device.</p><p>Create privacy-friendly, offline-ready, lightweight AI projects that run locally on phones, laptops, browsers, edge devices, or embedded systems — no cloud dependency for the core magic.</p></div><div class="modal-section"><div class="modal-section-title">Examples</div><ul><li>Offline browser tools</li><li>Privacy-first productivity apps</li><li>AI accessibility tools</li><li>Embedded AI devices</li></ul></div><div class="modal-ending">Surprise us with your creativity!</div>'
       },
       iconPath: 'assets/icons/color-wheel.png'
     },
@@ -196,8 +200,8 @@ const CONFIG = {
       actionText: 'VIEW BOUNTIES',
       actionLink: '#',
       popup: {
-        title: 'VIEW BOUNTIES',
-        body: '<div class="popup-section"><div class="popup-section-title">🏆 Hackathon Prizes</div><ul class="popup-list"><li>₹15,000 in Cash</li><li>Over ₹1,00,000 worth of CodeCrafters VIP Memberships</li><li>.xyz Domains</li><li>Goodies</li></ul></div><div class="popup-section"><div class="popup-section-title">🎮 Mini-Events Prizes</div><ul class="popup-list"><li>₹3,000 in Cash</li><li>Goodies</li></ul></div><div class="popup-rules-footer">Bring your best ideas to life and walk away with glory (and cash).</div>'
+        title: 'View Bounties',
+        body: '<div class="modal-section"><div class="modal-section-title">🏆 Hackathon Prizes</div><ul><li>₹15,000 in Cash</li><li>Over ₹1,00,000 worth of CodeCrafters VIP Memberships</li><li>.xyz Domains</li><li>Goodies</li></ul></div><div class="modal-section"><div class="modal-section-title">🎮 Mini Event Prizes</div><ul><li>₹3,000 in Cash</li><li>Goodies</li></ul></div><div class="modal-ending">Bring your best ideas to life and walk away with glory (and cash).</div>'
       },
       iconPath: 'assets/icons/stack-of-bills.png'
     },
@@ -209,6 +213,10 @@ const CONFIG = {
       info: 'Snag the official OSDHACK\'26 asset bundle: retro graphics, pixelated sound effects, color palette codes, and brand templates.',
       actionText: 'GET ASSETS PACK',
       actionLink: '#',
+      popup: {
+        title: 'DOWNLOAD ASSETS',
+        body: '<div class="modal-section"><div class="modal-section-title">Official Asset Bundle</div><p>The OSDHACK\'26 asset pack includes retro graphics, pixel sound effects, color palettes, and brand templates to level up your project.</p></div><div class="modal-section"><div class="modal-section-title">What\'s Inside</div><ul><li>Retro pixel graphics & sprites</li><li>Sound effect samples</li><li>Official color palette</li><li>Brand templates & logos</li></ul></div>'
+      },
       iconPath: 'assets/icons/folder.png'
     },
     {
@@ -220,8 +228,8 @@ const CONFIG = {
       actionText: 'ABOUT SPEED TYPING',
       actionLink: '#',
       popup: {
-        title: 'SPEED TYPING CHALLENGE',
-        body: '<p>Put your fingers to the test! A lightning-fast keyboard showdown where speed meets style.</p><div class="popup-section"><div class="popup-section-title">Timeline</div><ul class="popup-list"><li><strong>Session 1</strong> → 12 July (12:00 PM - 1:00 PM)</li><li><strong>Session 2</strong> → 13 July (12:00 PM - 1:00 PM)</li><li><strong>Finals</strong> → 13 July (7:00 PM)</li></ul></div><div class="popup-section"><div class="popup-section-title">Rules</div><ul class="popup-list"><li>Participants will be given random text to type.</li><li>Accuracy and speed both count.</li><li>Top performers from the sessions qualify for finals.</li></ul></div><div class="popup-rules-footer">Type like the wind and leave the rest in the dust!</div>'
+        title: 'Speed Typing Challenge',
+        body: '<p>Put your fingers to the test! A lightning-fast keyboard showdown where speed meets style.</p><div class="modal-section"><div class="modal-section-title">Timeline</div><ul><li><strong>Session 1</strong><br>12 July, 12:00 PM – 1:00 PM</li><li><strong>Session 2</strong><br>13 July, 12:00 PM – 1:00 PM</li><li><strong>Finals</strong><br>13 July, 7:00 PM</li></ul></div><div class="modal-section"><div class="modal-section-title">Rules</div><ul><li>Random text challenges</li><li>Speed and accuracy both count</li><li>Top performers qualify for finals</li></ul></div><div class="modal-ending">Type like the wind and leave the rest in the dust!</div>'
       },
       iconPath: 'assets/icons/geek.png'
     },
@@ -234,8 +242,8 @@ const CONFIG = {
       actionText: 'ABOUT CTF',
       actionLink: '#',
       popup: {
-        title: 'CAPTURE THE FLAG (CTF)',
-        body: '<p>It\'s not just a game—it\'s a digital battlefield. Solve puzzles, crack codes, and snag the flag in this mini-CTF.</p><div class="popup-section"><div class="popup-section-title">Event Timeline</div><ul class="popup-list"><li><strong>Starts:</strong> 12 July at 5:00 PM</li><li><strong>Ends:</strong> 13 July at 5:00 PM</li></ul></div><div class="popup-section"><div class="popup-section-title">Challenge Categories</div><ul class="popup-list"><li>Cryptography</li><li>Web Exploitation</li><li>Forensics</li><li>OSINT</li><li>General Skills</li><li>Miscellaneous</li></ul></div><div class="popup-section"><div class="popup-section-title">Rules</div><ul class="popup-list"><li>Team-based CTF</li><li>Flags must be submitted in the correct format.</li><li>Most points wins.</li></ul></div><div class="popup-rules-footer">Equal parts fun and challenge, ready to test your skills?</div>'
+        title: 'Capture The Flag (CTF)',
+        body: '<p>It\'s not just a game—it\'s a digital battlefield. Solve puzzles, crack codes, and snag the flag.</p><div class="modal-section"><div class="modal-section-title">Timeline</div><ul><li><strong>Starts</strong><br>12 July, 5:00 PM</li><li><strong>Ends</strong><br>13 July, 5:00 PM</li></ul></div><div class="modal-section"><div class="modal-section-title">Categories</div><ul><li>Cryptography</li><li>Web Exploitation</li><li>Forensics</li><li>OSINT</li><li>General Skills</li><li>Miscellaneous</li></ul></div><div class="modal-section"><div class="modal-section-title">Rules</div><ul><li>Team based</li><li>Submit flags in correct format</li><li>Highest score wins</li></ul></div><div class="modal-ending">Equal parts fun and challenge, ready to test your skills?</div>'
       },
       iconPath: 'assets/icons/flag.png'
     },
@@ -247,6 +255,10 @@ const CONFIG = {
       info: 'Explore the four hacking tracks: 1) Web3 Cabinets, 2) AI Retro Agents, 3) Open-Source Arcade emulator, 4) Creative Hardware hacks.',
       actionText: 'READ TRACK DETAILS',
       actionLink: '#',
+      popup: {
+        title: 'HACKING TRACKS',
+        body: ''
+      },
       iconPath: 'assets/icons/launch.png'
     },
     {
@@ -258,8 +270,8 @@ const CONFIG = {
       actionText: 'OPEN FAQ CENTER',
       actionLink: '#',
       popup: {
-        title: 'FAQ CENTER',
-        body: '<div style="text-align:center;padding:20px 0"><div style="font-size:12px;color:#00e5ff;margin-bottom:12px;text-shadow:0 0 8px rgba(0,229,255,0.4)">Transmission pending...</div><div style="font-size:10px;color:rgba(255,253,236,0.6);line-height:2">FAQ database is currently under construction.</div><div style="margin-top:16px;font-size:16px;animation:popupTraceMove 1.5s linear infinite;display:inline-block">⚙️</div></div>'
+        title: 'FAQ Center',
+        body: '<div class="faq-terminal"><div class="faq-terminal-line">Transmission pending...</div><div class="faq-terminal-sub">FAQ database is currently under construction.</div><div class="faq-terminal-spinner">⚙️</div></div>'
       },
       iconPath: 'assets/icons/caution.png'
     },
@@ -272,8 +284,8 @@ const CONFIG = {
       actionText: 'PLAY BATTLESHIPS',
       actionLink: '#',
       popup: {
-        title: 'BATTLESHIPS',
-        body: '<p>Code. Sink. Conquer. A strategic coding duel where classic Battleships meets programming challenges.</p><div class="popup-section"><div class="popup-section-title">Event Timeline</div><ul class="popup-list"><li><strong>Starts:</strong> 14 July at 12:00 PM</li><li><strong>Ends:</strong> 14 July at 2:00 PM</li></ul></div><div class="popup-section"><div class="popup-section-title">How It Works</div><ul class="popup-list"><li>Players are matched against opponents</li><li>Each player places their ships on the board</li><li>Players solve coding challenges to earn attacks</li><li>Winning a challenge lets you fire at the enemy board</li><li>Incorrect answers give the opponent a free shot</li><li>Some wrong moves may also hide previously revealed cells</li><li>The match continues until all ships of one player are destroyed</li></ul></div><div class="popup-section"><div class="popup-section-title">Rules</div><ul class="popup-list"><li>Participants register with teams</li><li>Matches are played individually</li><li>Individual scores are added to the team score</li><li>The team with the highest total score wins</li><li>Ratings and leaderboard rankings update after each match</li></ul></div><div class="popup-rules-footer">Out-code your opponent, sink their fleet, and lead your team to victory!</div>'
+        title: 'Code. Sink. Conquer.',
+        body: '<p>A strategic coding duel where classic Battleships meets programming challenges.</p><div class="modal-section"><div class="modal-section-title">Timeline</div><ul><li><strong>Starts</strong><br>14 July, 12:00 PM</li><li><strong>Ends</strong><br>14 July, 2:00 PM</li></ul></div><div class="modal-section"><div class="modal-section-title">How It Works</div><ul><li>Players are matched against opponents</li><li>Players place ships</li><li>Solve coding challenges to earn attacks</li><li>Winning grants a shot</li><li>Incorrect answers give opponents a free shot</li><li>Some wrong moves hide previously revealed cells</li><li>Match ends when one fleet is destroyed</li></ul></div><div class="modal-section"><div class="modal-section-title">Rules</div><ul><li>Team registration</li><li>Individual matches</li><li>Individual scores contribute to team score</li><li>Highest total team score wins</li><li>Ratings and leaderboard update after every match</li></ul></div><div class="modal-ending">Out-code your opponent, sink their fleet, and lead your team to victory!</div>'
       },
       iconPath: 'assets/icons/Battleship.png'
     },
@@ -285,6 +297,10 @@ const CONFIG = {
       info: 'Take a break and play some retro arcade mini-games between coding sessions. Compete for high scores and bragging rights!',
       actionText: 'PLAY ARCADE',
       actionLink: '#',
+      popup: {
+        title: 'ARCADE MINI-GAMES',
+        body: '<div class="modal-section"><div class="modal-section-title">Take a Break!</div><p>Step away from the coding terminal and dive into our retro arcade mini-games. Compete for high scores and earn bragging rights among fellow hackers!</p></div><div class="modal-section"><div class="modal-section-title">Featured Games</div><ul><li>Pixel Pong</li><li>Space Invaders</li><li>Snake Rally</li><li>And more!</li></ul></div>'
+      },
       iconPath: 'assets/icons/geek.png'
     },
     {
@@ -297,7 +313,7 @@ const CONFIG = {
       actionLink: '#',
       popup: {
         title: 'OUR SPONSORS',
-        body: '<p>A huge thanks to our amazing sponsors who make OSDHACK possible. Check out their booths, grab swag, and learn about opportunities.</p><div class="popup-section"><div class="popup-section-title">Our Partners</div><div class="sponsor-logos"><div class="sponsor-logo-item"><img src="assets/icons/codecrafters.png" alt="CodeCrafters" class="sponsor-logo-img"><span class="sponsor-logo-label">CodeCrafters</span></div><div class="sponsor-logo-item"><img src="assets/icons/xyz_logo (1).svg" alt=".xyz" class="sponsor-logo-img"><span class="sponsor-logo-label">.xyz</span></div></div></div>'
+        body: '<p>A huge thanks to our amazing sponsors who make OSDHACK possible. Check out their booths, grab swag, and learn about opportunities.</p><div class="modal-section"><div class="modal-section-title">Our Partners</div><div class="sponsor-logos"><div class="sponsor-logo-item"><img src="assets/icons/codecrafters.png" alt="CodeCrafters" class="sponsor-logo-img"><span class="sponsor-logo-label">CodeCrafters</span></div><div class="sponsor-logo-item"><img src="assets/icons/xyz_logo (1).svg" alt=".xyz" class="sponsor-logo-img"><span class="sponsor-logo-label">.xyz</span></div></div></div>'
       },
       iconPath: 'assets/icons/suit.png'
     }

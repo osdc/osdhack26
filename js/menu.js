@@ -2,9 +2,9 @@
  * menu.js — Retro Arcade Dashboard & Grid Menu Controller
  * ============================================================
  * PURPOSE:
- *   Handles 2D grid selection of the 12 hackathon modules,
- *   updates the Hero Select-style details panel with typewriter
- *   text and animated stat bars, and manages the OutRun HUD.
+ *   Handles 2D grid selection of the hackathon modules,
+ *   updates the Hero Select-style details panel (on click only),
+ *   and manages the OutRun HUD.
  * ============================================================ */
 
 const MenuScreen = (() => {
@@ -18,7 +18,6 @@ const MenuScreen = (() => {
   let gridNodes = [];
   let countdownInterval = null;
 
-  // Grid Dimensions: 5 columns, 3 rows (uneven row 3 has 2 items)
   const COLS = 5;
   const ROWS = 3;
 
@@ -27,24 +26,30 @@ const MenuScreen = (() => {
     const screen = $('menuScreen');
     if (!screen) return;
 
-    // Apply config background if configured
     Utils.setBackground(screen, CONFIG.menuBackground);
 
-    // Build the grid UI nodes
     buildGrid();
 
-    // Init HUD
     updateHUD();
     updateCountdown();
     startCountdown();
 
-    // Show screen
     screen.classList.add('active');
     active = true;
 
-    // Focus initial node
     updateSelection();
+    updateDetailsPanel();
     bindInputs();
+
+    const closeBtn = $('modalCloseBtn');
+    if (closeBtn) closeBtn.onclick = closeModal;
+
+    const overlay = $('arcadeModalOverlay');
+    if (overlay) {
+      overlay.onclick = (e) => {
+        if (e.target === overlay) closeModal();
+      };
+    }
   }
 
   /* ---- BUILD MODULE GRID ---- */
@@ -60,7 +65,6 @@ const MenuScreen = (() => {
       node.setAttribute('data-id', item.id);
       node.setAttribute('data-index', i);
 
-      // Icon Wrapper
       const iconWrap = Utils.createElement('div', 'grid-node-icon');
       if (item.iconPath) {
         const img = Utils.createElement('img', 'grid-node-img');
@@ -72,12 +76,11 @@ const MenuScreen = (() => {
       }
       node.appendChild(iconWrap);
 
-      // Label
       const label = Utils.createElement('div', 'grid-node-label');
       label.textContent = item.label;
       node.appendChild(label);
 
-      // Mouse events
+      // Hover — visual selection only, detail panel stays frozen
       node.addEventListener('mouseenter', () => {
         if (!active) return;
         if (i !== currentIndex) {
@@ -87,13 +90,13 @@ const MenuScreen = (() => {
         }
       });
 
+      // Click — update visual selection AND detail panel
       node.addEventListener('click', () => {
         if (!active) return;
         currentIndex = i;
         selectCurrent();
       });
 
-      // Restore explored state
       if (exploredModules.has(item.id)) {
         node.classList.add('explored');
       }
@@ -103,22 +106,19 @@ const MenuScreen = (() => {
     });
   }
 
-  /* ---- GRID NAVIGATION MATH ----
-   * Grid dimensions: 5 columns, 3 rows.
-   * Row 0: 0, 1, 2, 3, 4
-   * Row 1: 5, 6, 7, 8, 9
-   * Row 2: 10, 11
-   */
+  /* ---- GRID NAVIGATION MATH ---- */
   function navigateGrid(dx, dy) {
     if (!active) return;
+
+    const totalItems = CONFIG.menuItems.length;
+    const lastRowCols = totalItems % COLS || COLS;
 
     let row = Math.floor(currentIndex / COLS);
     let col = currentIndex % COLS;
 
-    // Moving Left/Right
     if (dx !== 0) {
       col += dx;
-      let colsInRow = (row === ROWS - 1) ? 2 : COLS; // Row 2 only has 2 items
+      let colsInRow = (row === ROWS - 1) ? lastRowCols : COLS;
       if (col < 0) {
         col = colsInRow - 1;
       } else if (col >= colsInRow) {
@@ -126,7 +126,6 @@ const MenuScreen = (() => {
       }
     }
 
-    // Moving Up/Down
     if (dy !== 0) {
       row += dy;
       if (row < 0) {
@@ -135,8 +134,7 @@ const MenuScreen = (() => {
         row = 0;
       }
 
-      // Handle row 2 column clamp
-      let colsInRow = (row === ROWS - 1) ? 2 : COLS;
+      let colsInRow = (row === ROWS - 1) ? lastRowCols : COLS;
       if (col >= colsInRow) {
         col = colsInRow - 1;
       }
@@ -147,7 +145,7 @@ const MenuScreen = (() => {
     updateSelection();
   }
 
-  /* ---- UPDATE SELECTION & DETAILS ---- */
+  /* ---- VISUAL SELECTION ONLY (no detail panel change) ---- */
   function updateSelection() {
     gridNodes.forEach((node, i) => {
       node.classList.toggle('selected', i === currentIndex);
@@ -156,18 +154,21 @@ const MenuScreen = (() => {
     const item = CONFIG.menuItems[currentIndex];
     if (!item) return;
 
-    // Play hover SFX
     Audio.playHover();
 
-    // Mark as explored if first time visiting
     if (!exploredModules.has(item.id)) {
       exploredModules.add(item.id);
       const node = gridNodes[currentIndex];
       if (node) node.classList.add('explored');
       updateHUD();
     }
+  }
 
-    // Update details card elements
+  /* ---- UPDATE DETAIL PANEL (called on click/enter only) ---- */
+  function updateDetailsPanel() {
+    const item = CONFIG.menuItems[currentIndex];
+    if (!item) return;
+
     const detailsPanel = $('arcadeDetailsPanel');
     const titleEl = $('detailsTitle');
     const iconEl = $('detailsIconWrapper');
@@ -212,13 +213,10 @@ const MenuScreen = (() => {
       }
     }
 
-    // Typewriter info text (only if item actually changed)
-    if (infoEl && item.info) {
-      if (previousIndex !== currentIndex) {
-        typewriteInfo(infoEl, item.info, item.color);
-      } else {
-        infoEl.textContent = item.info;
-      }
+    // Direct text — no typewriter/fade
+    if (infoEl) {
+      infoEl.textContent = item.info || '';
+      infoEl.style.color = '#fffdec';
     }
 
     if (actionBtn) {
@@ -227,7 +225,6 @@ const MenuScreen = (() => {
       actionBtn.style.color = item.color;
       actionBtn.style.borderColor = item.color;
 
-      // Reset hover listeners
       actionBtn.onmouseenter = () => {
         actionBtn.style.background = item.color;
         actionBtn.style.color = '#000';
@@ -238,55 +235,24 @@ const MenuScreen = (() => {
         actionBtn.style.color = item.color;
         actionBtn.style.boxShadow = 'none';
       };
+
+      if (item.popup) {
+        actionBtn.href = '#';
+        actionBtn.onclick = (e) => {
+          e.preventDefault();
+          openModal(item.popup);
+        };
+      } else {
+        actionBtn.onclick = null;
+      }
     }
 
-    // Animated Stats
     if (statsEl && item.stats) {
       renderAnimatedStats(statsEl, item.stats, item.color);
     }
   }
 
-  /* ---- TYPEWRITER INFO TEXT ---- */
-  function typewriteInfo(infoEl, text, color) {
-    // Cancel any ongoing typewriter
-    if (infoEl._typewriterTimer) {
-      clearInterval(infoEl._typewriterTimer);
-    }
-    if (infoEl._typewriterCleanup) {
-      infoEl._typewriterCleanup();
-    }
-
-    infoEl.innerHTML = '';
-    infoEl.style.color = '#fffdec';
-    let idx = 0;
-    const speed = 12;
-
-    // Add cursor
-    const cursor = Utils.createElement('span', 'cursor-blink');
-    infoEl.appendChild(cursor);
-
-    function tick() {
-      if (idx >= text.length) {
-        clearInterval(infoEl._typewriterTimer);
-        cursor.remove();
-        return;
-      }
-      // Insert cursor before the cursor element
-      const char = document.createTextNode(text[idx]);
-      infoEl.insertBefore(char, cursor);
-      idx++;
-    }
-
-    infoEl._typewriterTimer = setInterval(tick, speed);
-    infoEl._typewriterCleanup = () => {
-      if (infoEl._typewriterTimer) {
-        clearInterval(infoEl._typewriterTimer);
-        infoEl._typewriterTimer = null;
-      }
-    };
-  }
-
-  /* ---- ANIMATED STAT BARS ---- */
+  /* ---- STAT BARS ---- */
   function renderAnimatedStats(statsEl, stats, color) {
     const entries = Object.entries(stats);
     let html = '';
@@ -314,20 +280,47 @@ const MenuScreen = (() => {
 
     Audio.playSelect();
 
-    // Trigger grid flash effect
+    // Update visual selection
+    updateSelection();
+    // Update detail panel
+    updateDetailsPanel();
+
     const node = gridNodes[currentIndex];
     if (node) {
       node.style.animation = 'none';
-      void node.offsetWidth; // trigger reflow
+      void node.offsetWidth;
       node.style.animation = 'glitchScanline 0.15s 2';
     }
 
-    // Simulate clicking the action link
     if (item.actionLink && item.actionLink !== '#') {
       setTimeout(() => {
         window.open(item.actionLink, '_blank');
       }, 300);
     }
+  }
+
+  /* ---- MODAL SHOW / HIDE ---- */
+  function openModal(popup) {
+    const overlay = $('arcadeModalOverlay');
+    const titleEl = $('modalTitlebarText');
+    const bodyEl = $('modalBody');
+    if (!overlay) return;
+    overlay.classList.remove('closing');
+    if (titleEl) titleEl.textContent = popup.title;
+    if (bodyEl) bodyEl.innerHTML = popup.body;
+    if (bodyEl) bodyEl.scrollTop = 0;
+    overlay.classList.add('active');
+    document.body.classList.add('modal-visible');
+  }
+
+  function closeModal() {
+    const overlay = $('arcadeModalOverlay');
+    if (!overlay || !overlay.classList.contains('active')) return;
+    overlay.classList.add('closing');
+    document.body.classList.remove('modal-visible');
+    setTimeout(() => {
+      overlay.classList.remove('active', 'closing');
+    }, 200);
   }
 
   /* ---- COUNTDOWN ---- */
@@ -358,16 +351,14 @@ const MenuScreen = (() => {
     }
   }
 
-  /* ---- UPDATE TOP HUD DISPLAYS ---- */
   function updateHUD() {
     const exploredVal = $('hudExploredVal');
-
     if (exploredVal) {
       exploredVal.textContent = `${String(exploredModules.size).padStart(2, '0')}/${String(CONFIG.menuItems.length).padStart(2, '0')}`;
     }
   }
 
-  /* ---- INPUT BINDING ---- */
+  /* ---- INPUT ---- */
   function bindInputs() {
     document.addEventListener('keydown', onKey);
     document.addEventListener('gamepad:left',  () => navigateGrid(-1, 0));
@@ -385,6 +376,7 @@ const MenuScreen = (() => {
       case 'ArrowUp': case 'KeyW': e.preventDefault(); navigateGrid(0, -1); break;
       case 'ArrowDown': case 'KeyS': e.preventDefault(); navigateGrid(0, 1); break;
       case 'Enter': case 'Space': e.preventDefault(); selectCurrent(); break;
+      case 'Escape': e.preventDefault(); closeModal(); break;
     }
   }
 
