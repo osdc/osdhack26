@@ -14,12 +14,11 @@ const MenuScreen = (() => {
   let active = false;
   let currentIndex = 0;
   let previousIndex = -1;
-  let activeIndex = -1;
   let exploredModules = new Set();
   let gridNodes = [];
   let countdownInterval = null;
 
-  // Grid Dimensions: 5 columns, 3 rows (last row items calculated dynamically)
+  // Grid Dimensions: 5 columns, 3 rows (uneven row 3 has 2 items)
   const COLS = 5;
   const ROWS = 3;
 
@@ -45,22 +44,7 @@ const MenuScreen = (() => {
 
     // Focus initial node
     updateSelection();
-    updateDetails(0);
     bindInputs();
-
-    // Bind popup close button
-    const closeBtn = $('popupCloseBtn');
-    if (closeBtn) {
-      closeBtn.onclick = hidePopup;
-    }
-
-    // Close popup on overlay click (not on popup itself)
-    const overlay = $('arcadePopupOverlay');
-    if (overlay) {
-      overlay.onclick = (e) => {
-        if (e.target === overlay) hidePopup();
-      };
-    }
   }
 
   /* ---- BUILD MODULE GRID ---- */
@@ -71,10 +55,7 @@ const MenuScreen = (() => {
     gridNodes = [];
 
     CONFIG.menuItems.forEach((item, i) => {
-      const nodeClasses = ['grid-node'];
-      const isFolder = item.id === 'games' || item.id === 'sponsors';
-      if (isFolder) nodeClasses.push('folder-node');
-      const node = Utils.createElement('div', nodeClasses.join(' '));
+      const node = Utils.createElement('div', 'grid-node');
       node.style.setProperty('--node-color', item.color || '#ffd700');
       node.setAttribute('data-id', item.id);
       node.setAttribute('data-index', i);
@@ -135,11 +116,9 @@ const MenuScreen = (() => {
     let col = currentIndex % COLS;
 
     // Moving Left/Right
-    const totalItems = CONFIG.menuItems.length;
-    const lastRowCols = totalItems % COLS || COLS;
     if (dx !== 0) {
       col += dx;
-      let colsInRow = (row === ROWS - 1) ? lastRowCols : COLS;
+      let colsInRow = (row === ROWS - 1) ? 2 : COLS; // Row 2 only has 2 items
       if (col < 0) {
         col = colsInRow - 1;
       } else if (col >= colsInRow) {
@@ -156,8 +135,8 @@ const MenuScreen = (() => {
         row = 0;
       }
 
-      // Handle last-row column clamp
-      let colsInRow = (row === ROWS - 1) ? lastRowCols : COLS;
+      // Handle row 2 column clamp
+      let colsInRow = (row === ROWS - 1) ? 2 : COLS;
       if (col >= colsInRow) {
         col = colsInRow - 1;
       }
@@ -168,7 +147,7 @@ const MenuScreen = (() => {
     updateSelection();
   }
 
-  /* ---- UPDATE VISUAL SELECTION ONLY ---- */
+  /* ---- UPDATE SELECTION & DETAILS ---- */
   function updateSelection() {
     gridNodes.forEach((node, i) => {
       node.classList.toggle('selected', i === currentIndex);
@@ -187,16 +166,8 @@ const MenuScreen = (() => {
       if (node) node.classList.add('explored');
       updateHUD();
     }
-  }
 
-  /* ---- UPDATE DETAIL PANEL (on click/enter only) ---- */
-  function updateDetails(index) {
-    if (index === activeIndex) return;
-    activeIndex = index;
-
-    const item = CONFIG.menuItems[index];
-    if (!item) return;
-
+    // Update details card elements
     const detailsPanel = $('arcadeDetailsPanel');
     const titleEl = $('detailsTitle');
     const iconEl = $('detailsIconWrapper');
@@ -241,9 +212,13 @@ const MenuScreen = (() => {
       }
     }
 
-    // Typewriter info text
+    // Typewriter info text (only if item actually changed)
     if (infoEl && item.info) {
-      typewriteInfo(infoEl, item.info, item.color);
+      if (previousIndex !== currentIndex) {
+        typewriteInfo(infoEl, item.info, item.color);
+      } else {
+        infoEl.textContent = item.info;
+      }
     }
 
     if (actionBtn) {
@@ -252,6 +227,7 @@ const MenuScreen = (() => {
       actionBtn.style.color = item.color;
       actionBtn.style.borderColor = item.color;
 
+      // Reset hover listeners
       actionBtn.onmouseenter = () => {
         actionBtn.style.background = item.color;
         actionBtn.style.color = '#000';
@@ -262,17 +238,6 @@ const MenuScreen = (() => {
         actionBtn.style.color = item.color;
         actionBtn.style.boxShadow = 'none';
       };
-
-      // If item has a popup, show it on action button click instead of navigating
-      if (item.popup) {
-        actionBtn.href = '#';
-        actionBtn.onclick = (e) => {
-          e.preventDefault();
-          showPopup(item.popup);
-        };
-      } else {
-        actionBtn.onclick = null;
-      }
     }
 
     // Animated Stats
@@ -357,33 +322,12 @@ const MenuScreen = (() => {
       node.style.animation = 'glitchScanline 0.15s 2';
     }
 
-    // Update detail panel to clicked item
-    updateDetails(currentIndex);
-
-    // Open action link if configured
+    // Simulate clicking the action link
     if (item.actionLink && item.actionLink !== '#') {
       setTimeout(() => {
         window.open(item.actionLink, '_blank');
       }, 300);
     }
-  }
-
-  /* ---- POPUP SHOW / HIDE ---- */
-  function showPopup(popup) {
-    const overlay = $('arcadePopupOverlay');
-    const titleEl = $('popupTitlebarText');
-    const bodyEl = $('popupBody');
-    if (!overlay) return;
-    if (titleEl) titleEl.textContent = popup.title;
-    if (bodyEl) bodyEl.innerHTML = popup.body;
-    // Scroll to top when opening
-    if (bodyEl) bodyEl.scrollTop = 0;
-    overlay.classList.add('active');
-  }
-
-  function hidePopup() {
-    const overlay = $('arcadePopupOverlay');
-    if (overlay) overlay.classList.remove('active');
   }
 
   /* ---- COUNTDOWN ---- */
@@ -394,7 +338,7 @@ const MenuScreen = (() => {
     const event = new Date('2026-07-10T00:00:00');
     const diff = Math.ceil((event - now) / (1000 * 60 * 60 * 24));
     if (diff > 0) {
-      el.textContent = diff + '  DAYS';
+      el.textContent = diff + ' DAYS';
     } else if (diff === 0) {
       el.textContent = 'TODAY!';
     } else {
@@ -441,7 +385,6 @@ const MenuScreen = (() => {
       case 'ArrowUp': case 'KeyW': e.preventDefault(); navigateGrid(0, -1); break;
       case 'ArrowDown': case 'KeyS': e.preventDefault(); navigateGrid(0, 1); break;
       case 'Enter': case 'Space': e.preventDefault(); selectCurrent(); break;
-      case 'Escape': e.preventDefault(); hidePopup(); break;
     }
   }
 

@@ -264,6 +264,20 @@ const CONFIG = {
       iconPath: 'assets/icons/caution.png'
     },
     {
+      id: 'battleships',
+      label: 'BATTLESHIPS',
+      color: '#00acc1',
+      stats: { fun: 5, strategy: 5, challenge: 4 },
+      info: 'Command your fleet and outmanoeuvre opponents in the ultimate coding battleship showdown. Strategy meets syntax in this nautical mini-game!',
+      actionText: 'PLAY BATTLESHIPS',
+      actionLink: '#',
+      popup: {
+        title: 'BATTLESHIPS',
+        body: '<p>Code. Sink. Conquer. A strategic coding duel where classic Battleships meets programming challenges.</p><div class="popup-section"><div class="popup-section-title">Event Timeline</div><ul class="popup-list"><li><strong>Starts:</strong> 14 July at 12:00 PM</li><li><strong>Ends:</strong> 14 July at 2:00 PM</li></ul></div><div class="popup-section"><div class="popup-section-title">How It Works</div><ul class="popup-list"><li>Players are matched against opponents</li><li>Each player places their ships on the board</li><li>Players solve coding challenges to earn attacks</li><li>Winning a challenge lets you fire at the enemy board</li><li>Incorrect answers give the opponent a free shot</li><li>Some wrong moves may also hide previously revealed cells</li><li>The match continues until all ships of one player are destroyed</li></ul></div><div class="popup-section"><div class="popup-section-title">Rules</div><ul class="popup-list"><li>Participants register with teams</li><li>Matches are played individually</li><li>Individual scores are added to the team score</li><li>The team with the highest total score wins</li><li>Ratings and leaderboard rankings update after each match</li></ul></div><div class="popup-rules-footer">Out-code your opponent, sink their fleet, and lead your team to victory!</div>'
+      },
+      iconPath: 'assets/icons/Battleship.png'
+    },
+    {
       id: 'games',
       label: 'GAMES',
       color: '#e040fb',

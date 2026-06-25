@@ -66,13 +66,14 @@
     font-size: 6.5px;
   }
 
-  .folder-node .grid-node-label {
-    font-size: 5.5px;
+  /* Battleships bigger icon on tablet */
+  .grid-node[data-id="battleships"] .grid-node-icon {
+    width: 30px;
+    height: 30px;
   }
 
-  .folder-node .grid-node-icon {
-    width: 20px;
-    height: 20px;
+  .grid-node[data-id="battleships"] .grid-node-label {
+    font-size: 5.5px;
   }
 
   .arcade-details-panel {
@@ -198,13 +199,14 @@
     font-size: 5.5px;
   }
 
-  .folder-node .grid-node-label {
-    font-size: 4.5px;
+  /* Battleships bigger icon on mobile */
+  .grid-node[data-id="battleships"] .grid-node-icon {
+    width: 26px;
+    height: 26px;
   }
 
-  .folder-node .grid-node-icon {
-    width: 16px;
-    height: 16px;
+  .grid-node[data-id="battleships"] .grid-node-label {
+    font-size: 5px;
   }
 
   .arcade-details-panel {
@@ -331,12 +333,6 @@
     padding: 2px 5px;
   }
 
-  /* Folder trace scale down to prevent overflow */
-  .folder-node:hover::before,
-  .folder-node.selected::before {
-    transform: scale(1.06);
-  }
-
   /* Menu prompt compact */
   .menu-select-prompt {
     font-size: 5.5px;
@@ -378,13 +374,13 @@
     font-size: 4.5px;
   }
 
-  .folder-node .grid-node-label {
-    font-size: 3.5px;
+  .grid-node[data-id="battleships"] .grid-node-icon {
+    width: 18px;
+    height: 18px;
   }
 
-  .folder-node .grid-node-icon {
-    width: 12px;
-    height: 12px;
+  .grid-node[data-id="battleships"] .grid-node-label {
+    font-size: 4px;
   }
 
   .details-stats-block {
@@ -530,12 +526,6 @@
     font-size: 5px;
   }
 
-  /* Folder trace minimal */
-  .folder-node:hover::before,
-  .folder-node.selected::before {
-    transform: scale(1.03);
-  }
-
   .menu-select-prompt {
     font-size: 4.5px;
     letter-spacing: 0.5px;
@@ -595,20 +585,6 @@
 
   .grid-node-label {
     font-size: 5.5px;
-  }
-
-  .folder-node .grid-node-label {
-    font-size: 4px;
-  }
-
-  .folder-node .grid-node-icon {
-    width: 14px;
-    height: 14px;
-  }
-
-  .folder-node:hover::before,
-  .folder-node.selected::before {
-    transform: scale(1.06);
   }
 
   .details-stats-block {
