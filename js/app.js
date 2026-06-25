@@ -16,57 +16,107 @@
  *   All behavior is driven by CONFIG. No changes needed here
  *   unless you want to alter the screen flow order.
  * ============================================================ */
-
 (function () {
   'use strict';
 
-  document.addEventListener('DOMContentLoaded', async () => {
+  document.addEventListener('DOMContentLoaded', () => {
 
-    /* ---- SET PAGE TITLE FROM CONFIG ---- */
-    document.title = CONFIG.title + ' — Arcade Hackathon';
+    /* ---- CUTSCENE ---- */
+    const cinematic = document.getElementById('cinematic');
+    const website   = document.querySelector('.website-container');
+    const v1        = document.getElementById('phase1Video');
+    const v2        = document.getElementById('loopVideo');
+    const v3        = document.getElementById('phase3Video');
 
-    /* ---- INIT AUDIO (stays muted until user toggles) ---- */
-    Audio.init();
+    let phase        = 'phase1';
+    let cutsceneDone = false;
 
-    /* ---- INIT GAMEPAD POLLING ---- */
-    Gamepad.start();
-
-    /* ---- BIND SFX TOGGLE BUTTON ---- */
-    const sfxBtn = Utils.$('sfxToggle');
-    if (sfxBtn) {
-      sfxBtn.addEventListener('click', () => {
-        Audio.unlock();
-        const muted = Audio.toggleMute();
-        sfxBtn.classList.toggle('muted', muted);
-        sfxBtn.textContent = muted ? '🔇 SFX' : '🔊 SFX';
-        
-        if (!muted) {
-          Audio.playHover();
-          Audio.playAmbient(); // Start looping theme
-        } else {
-          Audio.stopAmbient(); // Stop theme if muted
+    function show(to, from) {
+      to.currentTime = 0;
+      to.play();
+      requestAnimationFrame(() => {
+        to.style.opacity = '1';
+        if (from) {
+          to.addEventListener('transitionend', () => {
+            from.style.opacity = '0';
+          }, { once: true });
         }
       });
     }
 
-    /* ============================================================
-     * SCREEN FLOW CHAIN
-     * Each screen calls the next when it finishes.
-     * ============================================================ */
+    function goToPhase3() {
+      if (phase === 'phase3' || phase === 'done') return;
+      const from = phase === 'loop' ? v2 : v1;
+      phase = 'phase3';
+      v2.loop = false;
+      v2.pause();
+      document.querySelector(".press-space").style.opacity = 0;
+      show(v3, from);
+    }
 
-    /* Step 1: CRT Power-On Boot */
-    await CRT.boot();
+    v1.addEventListener('ended', () => {
+      if (phase !== 'phase1') return;
+      phase = 'loop';
+      show(v2, v1);
+      setTimeout(() => {
+        document.querySelector(".press-space").style.display = "block";
+    }, 4000);
+    }, { once: true });
 
-    /* Step 2: Loading Screen */
-    LoadingScreen.start(() => {
+    function onSpace(e) {
+      if (e.code !== 'Space') return;
+      window.removeEventListener('keydown', onSpace);
+      goToPhase3();
+    }
+    window.addEventListener('keydown', onSpace);
 
-      /* Step 3: Press Start Screen */
-      StartScreen.show(() => {
+    // phase3 - go to website
+    v3.addEventListener('ended', () => {
+      if (cutsceneDone) return;
+      cutsceneDone = true;
+      phase = 'done';
 
-        /* Step 4: Main Menu */
-        MenuScreen.show();
+      website.classList.add('visible');
+
+      // boot everything while cinematic still covers
+      document.title = CONFIG.title + ' — Arcade Hackathon';
+      Audio.init();
+      Gamepad.start();
+
+      const sfxBtn = Utils.$('sfxToggle');
+      if (sfxBtn) {
+        sfxBtn.addEventListener('click', () => {
+          Audio.unlock();
+          const muted = Audio.toggleMute();
+          sfxBtn.classList.toggle('muted', muted);
+          sfxBtn.textContent = muted ? '🔇 SFX' : '🔊 SFX';
+          if (!muted) { Audio.playHover(); Audio.playAmbient(); }
+          else { Audio.stopAmbient(); }
+        });
+      }
+      
+      // paint website first, then crossfade cinematic out
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          cinematic.style.transition = 'opacity 600ms ease';
+          cinematic.style.opacity    = '0';
+          website.classList.add('fade-in');
+
+          cinematic.addEventListener('transitionend', () => {
+            cinematic.remove();
+          }, { once: true });
+
+          CRT.boot().then(() => {
+            LoadingScreen.start(() => {
+              StartScreen.show(() => {
+                MenuScreen.show();
+              });
+            });
+          });
+        });
       });
-    });
+
+    }, { once: true });
 
   });
 })();

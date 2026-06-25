@@ -1,24 +1,13 @@
 /* ============================================================
- * loading.js — BIOS-Style Loading Screen Controller
+ * loading.js — AAA Arcade Loading Screen Controller
  * ============================================================
  * PURPOSE:
- *   Green phosphor terminal that mimics an arcade BIOS boot:
- *   1. BIOS header appears
- *   2. Boot check lines appear one by one with [OK]
- *   3. Pizza-slice loading bar fills (🍕 segments)
- *   4. Console messages scroll
- *   5. Pizza tip rotates at bottom
+ *   Handles the loading sequence:
+ *   1. Displays the loading screen
+ *   2. Fills the pizza slice loading bar
+ *   3. Rotates status messages below the loading bar
+ *   4. Rotates pizza tips in the tip box at the bottom
  *   Then transitions to the Start Screen.
- *
- * CUSTOMIZATION:
- *   - CONFIG.loadingBackground: screen background
- *   - CONFIG.pizzaSprite: mascot in the tip box
- *   - CONFIG.pizzaFacts[]: rotating tip messages
- *   - CONFIG.timings.loadingDuration: total load time
- *   - CONFIG.timings.factRotateInterval: ms between tips
- *
- * FLOW:
- *   LoadingScreen.start(onComplete) → fills bar → calls callback
  * ============================================================ */
 
 const LoadingScreen = (() => {
@@ -27,30 +16,28 @@ const LoadingScreen = (() => {
   const $ = Utils.$;
   let onCompleteCallback = null;
 
-  /* ---- BOOT CHECK MESSAGES ----
-   * These appear as BIOS-style status lines with dot padding.
-   * Format: "> TEXT...........[OK]"
+  /* ---- STATUS MESSAGES ----
+   * These appear one at a time below the loading bar.
    */
-  const BOOT_CHECKS = [
-    { text: 'MEMORY CHECK', dots: 15 },
-    { text: 'PIZZA DRIVE DETECTED', dots: 10 },
-    { text: 'ARCADE SYSTEMS ONLINE', dots: 9 },
-    { text: 'HACK MODULES LOADED', dots: 10 },
-    { text: 'CHEESE PROTOCOL ENABLED', dots: 7 },
+  const STATUS_MSGS = [
+    'Loading Tracks...',
+    'Generating Ideas...',
+    'Brewing Coffee...',
+    'Calibrating Hack Systems...',
+    'Connecting Team Nodes...',
+    'Preparing Challenge Arena...',
+    'Warming up Pixel Oven...'
   ];
 
-  /* ---- CONSOLE MESSAGES ----
-   * Scroll below the loading bar during progress.
+  /* ---- TIP MESSAGES ----
+   * These rotate in the pizza tip box at the bottom.
    */
-  const CONSOLE_MSGS = [
-    '> MOUNTING PIZZA DRIVE....',
-    '> LOADING TRACK DATABASE....',
-    '> CONNECTING TO HACK NETWORK...',
-    '> SPAWNING TEAM TOKENS...',
-    '> INITIALIZING JUDGING MATRIX...',
-    '> WARMING UP PIXEL OVEN...',
-    '> SYNCING SPONSOR MODULES...',
-    '> ARCADE ENGINE READY ✓',
+  const DEFAULT_TIPS = [
+    "Pineapple on pizza causes merge conflicts.",
+    "If it works on localhost, you're halfway there.",
+    "Git commit messages are read more than the code.",
+    "Always leave the code cheesier than you found it.",
+    "A developer's best friend is a rubber duck (or a slice of pizza)."
   ];
 
   /* ---- START LOADING ---- */
@@ -59,57 +46,26 @@ const LoadingScreen = (() => {
     const screen = $('loadingScreen');
     if (!screen) return;
 
-    // Apply config background if set
-    Utils.setBackground(screen, CONFIG.loadingBackground);
-
-    // Set mascot in tip box
-    const mascotImg = $('tipMascotImg');
-    const mascotFallback = $('tipMascotFallback');
-    if (mascotImg && CONFIG.pizzaSprite) {
-      mascotImg.src = CONFIG.pizzaSprite;
-      mascotImg.style.display = 'block';
-      if (mascotFallback) mascotFallback.style.display = 'none';
-    }
-
     // Show screen
     screen.classList.add('active');
 
-    // Run the boot sequence
+    // Run the sequence
     runBootSequence();
   }
 
   /* ---- BOOT SEQUENCE ---- */
   async function runBootSequence() {
-    const duration = CONFIG.timings.loadingDuration;
+    const duration = CONFIG.timings.loadingDuration || 4000;
 
-    /* Phase 1: Show boot check lines one by one */
-    const checksContainer = $('bootChecks');
-    if (checksContainer) {
-      checksContainer.innerHTML = '';
-
-      for (let i = 0; i < BOOT_CHECKS.length; i++) {
-        const check = BOOT_CHECKS[i];
-        const dots = '.'.repeat(check.dots);
-        const line = Utils.createElement('div', 'boot-check-line');
-        line.style.setProperty('--line-delay', (i * 0.25) + 's');
-        line.innerHTML = `> ${check.text}${dots}<span class="ok-tag">[OK]</span>`;
-        checksContainer.appendChild(line);
-        Audio.playTick();
-        await Utils.delay(280);
-      }
-    }
-
-    await Utils.delay(300);
-
-    /* Phase 2: Start the pizza loading bar + console + tips simultaneously */
+    /* Start the animations */
     startPizzaBar();
-    startConsoleMessages();
+    startStatusMessages();
     startTipRotation();
 
-    /* Phase 3: Wait for loading to finish */
+    /* Wait for loading to finish */
     await Utils.delay(duration);
 
-    /* Phase 4: Finish and transition */
+    /* Finish and transition */
     finishLoading();
   }
 
@@ -118,7 +74,7 @@ const LoadingScreen = (() => {
     const segments = Utils.$qa('.pizza-segment');
     const percentLabel = $('pizzaBarPercent');
     const totalSegments = segments.length;
-    const duration = CONFIG.timings.loadingDuration;
+    const duration = CONFIG.timings.loadingDuration || 4000;
     let progress = 0;
 
     const interval = setInterval(() => {
@@ -145,32 +101,34 @@ const LoadingScreen = (() => {
     }, duration / 28);
   }
 
-  /* ---- CONSOLE MESSAGES ---- */
-  function startConsoleMessages() {
-    const consoleEl = $('loadingConsole');
-    if (!consoleEl) return;
-    consoleEl.innerHTML = '';
+  /* ---- ANIMATED STATUS MESSAGES ---- */
+  function startStatusMessages() {
+    const statusEl = $('animatedStatusLine');
+    if (!statusEl) return;
 
-    const duration = CONFIG.timings.loadingDuration;
-    const msgInterval = duration / CONSOLE_MSGS.length;
+    const duration = CONFIG.timings.loadingDuration || 4000;
+    const msgInterval = duration / STATUS_MSGS.length;
     let i = 0;
 
     const timer = setInterval(() => {
-      if (i >= CONSOLE_MSGS.length) { clearInterval(timer); return; }
+      if (i >= STATUS_MSGS.length) { clearInterval(timer); return; }
 
-      const line = Utils.createElement('div', 'console-line');
-      line.textContent = CONSOLE_MSGS[i];
-
-      // Add cursor to the last line
-      if (i === CONSOLE_MSGS.length - 1) {
-        const cursor = Utils.createElement('span', 'console-cursor');
-        line.appendChild(cursor);
-      }
-
-      consoleEl.appendChild(line);
-      consoleEl.scrollTop = consoleEl.scrollHeight;
-      i++;
+      // Fade out
+      statusEl.style.opacity = '0';
+      
+      // Update text and fade in
+      setTimeout(() => {
+        statusEl.textContent = STATUS_MSGS[i];
+        statusEl.style.opacity = '1';
+        i++;
+      }, 150); // wait for fade out
+      
     }, msgInterval);
+    
+    // Initial display
+    statusEl.textContent = STATUS_MSGS[0];
+    statusEl.style.opacity = '1';
+    i = 1;
   }
 
   /* ---- TIP ROTATION ---- */
@@ -178,7 +136,8 @@ const LoadingScreen = (() => {
     const tipEl = $('pizzaTipText');
     if (!tipEl) return;
 
-    const facts = CONFIG.pizzaFacts;
+    // Use facts from CONFIG if available, else use defaults
+    const facts = (CONFIG.pizzaFacts && CONFIG.pizzaFacts.length > 0) ? CONFIG.pizzaFacts : DEFAULT_TIPS;
     let shuffled = Utils.shuffle([...facts]);
     let idx = 0;
 
@@ -192,7 +151,7 @@ const LoadingScreen = (() => {
         idx = 0;
       }
       showTip();
-    }, CONFIG.timings.factRotateInterval);
+    }, CONFIG.timings.factRotateInterval || 3000);
 
     // Store for cleanup
     tipEl._tipInterval = interval;

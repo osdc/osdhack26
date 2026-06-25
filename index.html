@@ -12,7 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <!-- css file set -->
-  <link rel="stylesheet" href="css/animations.css">   <!-- shared animations -->
+  <link rel="stylesheet" href="css/cutscene.css">      <!-- startting cutscene masti -->
+  <link rel="stylesheet" href="css/animations.css">    <!-- shared animations -->
   <link rel="stylesheet" href="css/crt.css">           <!-- crt effect -->
   <link rel="stylesheet" href="css/loading.css">       <!-- loading screen -->
   <link rel="stylesheet" href="css/start.css">         <!-- start screen -->
@@ -20,6 +21,11 @@
   <link rel="stylesheet" href="css/pizza.css">         <!-- pizza magic -->
   <link rel="stylesheet" href="css/responsive.css">    <!-- responsive queries -->
 
+
+  <!-- preload the videos -->
+  <link rel="preload" href="phase1.mp4" as="video"> 
+  <link rel="preload" href="loop.mp4" as="video">
+  <link rel="preload" href="phase3.mp4" as="video">
   <style>
     /* custom pizza cursor — tilted left, bigger, pixelated */
     html {
@@ -85,8 +91,17 @@
   </style>
 </head>
 <body>
+  <div class="cinematic-container" id="cinematic">
+    <div class="press-space">
+      <span>Press SPACE on your keyboard to continue!</span>
+    </div>
+    <video id="phase1Video" autoplay playsinline preload="auto" src="assets/video/phase1.mp4"></video>
+    <video id="loopVideo" playsinline preload="auto" src="assets/video/loop.mp4" loop></video>
+    <video id="phase3Video" playsinline preload="auto" src="assets/video/phase3.mp4"></video>
+  </div>
 
-<!-- tv gol filter -->
+<div class="website-container">
+  <!-- tv gol filter -->
 <svg width="0" height="0" style="position:absolute">
   <defs>
     <!-- map jugaad -->
@@ -149,78 +164,76 @@
     <!-- background mast -->
     <div class="global-theme-bg" style="
       position: absolute; inset: 0; z-index: 50;
-      background: linear-gradient(180deg,
-        #0f0520 0%, #17082e 15%, #2a1048 30%,
-        #4a1a5e 42%, #b0306a 52%, #d06050 60%,
-        #c04a3a 66%, #2a4a6a 75%, #1a3a5a 85%,
-        #0d2038 100%);
-      background-size: cover;
-      background-position: center;">
-      <!-- piche ka scene -->
-      <div class="menu-trees"></div>
-      <div class="menu-ground"></div>
-      <div class="menu-water"></div>
-      <div class="menu-stars"></div>
-      <div class="bg-neon-grid"></div>
+      background: #0f0520;">
+      <!-- low opacity pizz.png background -->
+      <div style="position: absolute; inset: 0; background: url('assets/images/pizz.png') center/cover no-repeat; opacity: 0.15; image-rendering: pixelated;"></div>
     </div>
 
 
     <!-- screen 1 load -->
     <div class="loading-screen" id="loadingScreen">
+      
+      <!-- Content centered in middle -->
       <div class="loading-content">
-
-        <!-- upar ka text -->
-        <div class="bios-header">OSDHACK'26 BIOS v1.0.0</div>
-        <div class="bios-separator">─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─</div>
-
-        <!-- boot status -->
-        <div class="boot-checks" id="bootChecks">
-          <!-- js se aayega -->
-        </div>
-
-        <!-- load ho rha -->
-        <div class="loading-section">
-          <div class="loading-arcade-label">
-            <span class="pizza-icon">🍕</span>
-            LOADING ARCADE OS...
-            <span class="pizza-icon">🍕</span>
-          </div>
-
-          <!-- pizza bar jugaad -->
-          <div class="pizza-bar-container">
-            <div class="pizza-bar-track" id="loadingBarTrack">
-              <div class="pizza-segment" data-i="0"></div>
-              <div class="pizza-segment" data-i="1"></div>
-              <div class="pizza-segment" data-i="2"></div>
-              <div class="pizza-segment" data-i="3"></div>
-              <div class="pizza-segment" data-i="4"></div>
-              <div class="pizza-segment" data-i="5"></div>
-              <div class="pizza-segment" data-i="6"></div>
-              <div class="pizza-segment" data-i="7"></div>
-              <div class="pizza-segment" data-i="8"></div>
-              <div class="pizza-segment" data-i="9"></div>
-            </div>
-            <div class="pizza-bar-percent" id="pizzaBarPercent">0%</div>
+        
+        <!-- Centerpiece mascot -->
+        <div class="loading-centerpiece">
+          <div class="pizza-mascot-container">
+            <svg class="pizza-mascot-svg" xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 48 48" style="shape-rendering:crispEdges">
+              <g class="pizza-slice">
+                <polygon points="24,4 38,36 10,36" fill="#f5c842" stroke="#c89f2a" stroke-width="2"/>
+                <polygon points="24,10 34,32 14,32" fill="#f0b030"/>
+                <circle cx="18" cy="26" r="4" fill="#cc3333"/>
+                <circle cx="30" cy="24" r="4" fill="#cc3333"/>
+                <circle cx="24" cy="18" r="4" fill="#cc3333"/>
+                <circle cx="20" cy="32" r="3" fill="#cc3333"/>
+                <circle cx="28" cy="30" r="3" fill="#cc3333"/>
+                <path class="cheese-stretch stretch-1" d="M16,36 L16,42" stroke="#f0b030" stroke-width="2" stroke-linecap="round"/>
+                <path class="cheese-stretch stretch-2" d="M24,36 L24,44" stroke="#f0b030" stroke-width="2" stroke-linecap="round"/>
+                <path class="cheese-stretch stretch-3" d="M32,36 L32,40" stroke="#f0b030" stroke-width="2" stroke-linecap="round"/>
+              </g>
+            </svg>
+            <div class="mascot-shadow"></div>
           </div>
         </div>
 
-        <!-- console text -->
-        <div class="loading-console" id="loadingConsole"></div>
+        <div class="loading-text-retro">LOADING...</div>
 
-        <!-- pizza tip box -->
-        <div class="pizza-tip-box">
-          <div class="pizza-tip-content">
-            <div class="pizza-tip-label">🍕 TODAY'S PIZZA TIP:</div>
-            <div class="pizza-tip-text" id="pizzaTipText">Initializing pizza knowledge...</div>
+        <!-- pizza bar jugaad -->
+        <div class="pizza-bar-container">
+          <div class="pizza-bar-track" id="loadingBarTrack">
+            <div class="pizza-segment" data-i="0"></div>
+            <div class="pizza-segment" data-i="1"></div>
+            <div class="pizza-segment" data-i="2"></div>
+            <div class="pizza-segment" data-i="3"></div>
+            <div class="pizza-segment" data-i="4"></div>
+            <div class="pizza-segment" data-i="5"></div>
+            <div class="pizza-segment" data-i="6"></div>
+            <div class="pizza-segment" data-i="7"></div>
+            <div class="pizza-segment" data-i="8"></div>
+            <div class="pizza-segment" data-i="9"></div>
           </div>
-          <img id="tipMascotImg" class="pizza-tip-mascot" src="" alt="Mascot" style="display:none;" draggable="false">
-          <div class="pizza-tip-mascot-fallback" id="tipMascotFallback">🍕😎</div>
+          <div class="pizza-bar-percent" id="pizzaBarPercent">0%</div>
+        </div>
+
+        <!-- Animated Status Line -->
+        <div class="animated-status-line" id="animatedStatusLine">
+          Loading Tracks...
         </div>
 
       </div>
 
-      <!-- niche wala -->
-      <div class="loading-footer">POWERED BY CAFFEINE & PIZZA <span class="heart">❤</span></div>
+      <!-- pizza tip box at bottom -->
+      <div class="pizza-tip-box">
+        <div class="pizza-tip-icon-wrapper">
+          <svg class="pizza-tip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFD700"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 2.96 5.77C8.42 15.25 9 16.03 9 17v1h6v-1c0-.97.58-1.75 1.04-2.23C17.81 13.47 19 11.38 19 9c0-3.86-3.14-7-7-7z"/></svg>
+        </div>
+        <div class="pizza-tip-content">
+          <div class="pizza-tip-heading">Pizza Tip</div>
+          <div class="pizza-tip-text" id="pizzaTipText">Initializing pizza knowledge...</div>
+        </div>
+      </div>
+
     </div>
 
 
@@ -329,6 +342,8 @@
 <script src="js/menu.js"></script>
 <script src="js/pizza.js"></script>
 <script src="js/app.js"></script>
+
+</div>
 
 </body>
 </html>
