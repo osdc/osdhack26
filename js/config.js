@@ -131,7 +131,7 @@ const CONFIG = {
       actionLink: '#',
       popup: {
         title: 'SAVE THE DATES',
-        body: '<img class="modal-calendar-icon" src="assets/icons/calendar.png" alt="calendar" draggable="false"><div class="modal-section"><div class="modal-section-title">Hackathon Dates</div><p style="text-align:center;font-size:10px;line-height:2">11 July, 7:00 PM<br><span style="color:#ffd700;font-size:14px">↓</span><br>13 July, 11:59 PM</p></div>'
+        body: '<img class="modal-calendar-icon" src="assets/icons/calendar.png" alt="calendar" draggable="false"><div class="modal-section"><div class="modal-section-title">Hackathon Dates</div><p style="text-align:center;font-size:9px;line-height:2">10 July (6:00 PM) - 15 July (6:00 PM)</p></div>'
       },
       iconPath: 'assets/icons/calendar.png'
     },
