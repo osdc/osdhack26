@@ -1,0 +1,25 @@
+{
+  "players": {
+    "65db2c5a-21b5-49f6-bfc6-43b518b150af": {
+      "browserId": "65db2c5a-21b5-49f6-bfc6-43b518b150af",
+      "playerName": "PLAYER",
+      "score": 5430,
+      "bestScore": 5430,
+      "level": 2,
+      "timestamp": "2026-06-25T17:59:36.640030+00:00",
+      "updatedAt": "2026-06-25T17:59:36.640030+00:00",
+      "recentScores": [
+        {
+          "score": 3700,
+          "level": 1,
+          "timestamp": "2026-06-25T17:59:04.323139+00:00"
+        },
+        {
+          "score": 5430,
+          "level": 2,
+          "timestamp": "2026-06-25T17:59:36.640030+00:00"
+        }
+      ]
+    }
+  }
+}
