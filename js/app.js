@@ -31,9 +31,18 @@
     let phase        = 'phase1';
     let cutsceneDone = false;
 
+    function playVideo(video) {
+      video.currentTime = 0;
+      const promise = video.play();
+      if (promise && typeof promise.catch === 'function') {
+        promise.catch((error) => {
+          console.warn('[Cutscene] Video playback failed:', error);
+        });
+      }
+    }
+
     function show(to, from) {
-      to.currentTime = 0;
-      to.play();
+      playVideo(to);
       requestAnimationFrame(() => {
         to.style.opacity = '1';
         if (from) {
@@ -69,6 +78,16 @@
       goToPhase3();
     }
     window.addEventListener('keydown', onSpace);
+
+    // jabardasti yahan bhi saare flags
+    v1.muted = true;
+    v1.defaultMuted = true;
+    v1.playsInline = true;
+    if (v1.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      playVideo(v1);
+    } else {
+      v1.addEventListener('canplay', () => playVideo(v1), { once: true });
+    }
 
     // phase3 - go to website
     v3.addEventListener('ended', () => {

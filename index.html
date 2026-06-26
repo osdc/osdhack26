@@ -23,9 +23,9 @@
 
 
   <!-- preload the videos -->
-  <link rel="preload" href="phase1.mp4" as="video"> 
-  <link rel="preload" href="loop.mp4" as="video">
-  <link rel="preload" href="phase3.mp4" as="video">
+  <link rel="preload" href="assets/video/phase1.mp4" as="video"> 
+  <link rel="preload" href="assets/video/loop.mp4" as="video">
+  <link rel="preload" href="assets/video/phase3.mp4" as="video">
   <style>
     /* custom pizza cursor — tilted left, bigger, pixelated */
     html {
@@ -99,9 +99,9 @@
     <div class="press-space">
       <span>Press SPACE on your keyboard to continue!</span>
     </div>
-    <video id="phase1Video" autoplay playsinline preload="auto" src="assets/video/phase1.mp4"></video>
-    <video id="loopVideo" playsinline preload="auto" src="assets/video/loop.mp4" loop></video>
-    <video id="phase3Video" playsinline preload="auto" src="assets/video/phase3.mp4"></video>
+    <video id="phase1Video" muted playsinline webkit-playsinline preload="auto" src="assets/video/phase1.mp4"></video>
+    <video id="loopVideo" playsinline webkit-playsinline preload="auto" src="assets/video/loop.mp4" loop></video>
+    <video id="phase3Video" playsinline webkit-playsinline preload="auto" src="assets/video/phase3.mp4"></video>
   </div>
 
 <div class="website-container">
