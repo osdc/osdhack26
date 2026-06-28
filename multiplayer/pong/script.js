@@ -2,7 +2,7 @@ const canvas = document.getElementById('pong');
 const ctx = canvas.getContext('2d');
 const WS_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'ws://localhost:8765'
-  : 'wss://jha.jpoop.in:4200';
+  : 'wss://jha.jpoop.in:6920';
 
 let gameState = {
   ballX: 400,

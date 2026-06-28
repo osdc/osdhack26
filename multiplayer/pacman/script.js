@@ -2682,6 +2682,9 @@ class Timer {
   const leaderboardList = document.getElementById('leaderboard-list');
   const playerNameDisplay = document.getElementById('leaderboard-player-name');
   const bestScoreDisplay = document.getElementById('leaderboard-best-score');
+  const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? ''
+    : 'https://jha.jpoop.in:6910';
   const browserId = loadBrowserId();
   const playerName = loadPlayerName();
   let browserBest = parseInt(localStorage.getItem(LOCAL_BEST_KEY) || '0', 10) || 0;
@@ -2775,7 +2778,7 @@ class Timer {
 
   async function refreshLeaderboard() {
     try {
-      const data = await fetchJson('/api/leaderboard');
+      const data = await fetchJson(`${API_BASE}/api/leaderboard`);
       serverAvailable = true;
       renderLeaderboard(data.leaders || []);
     } catch (_error) {
@@ -2785,7 +2788,7 @@ class Timer {
 
   async function refreshPlayer() {
     try {
-      const data = await fetchJson(`/api/player/${encodeURIComponent(browserId)}`);
+      const data = await fetchJson(`${API_BASE}/api/player/${encodeURIComponent(browserId)}`);
       serverAvailable = true;
       applyPlayerRecord(data.player || data);
     } catch (_error) {
@@ -2813,7 +2816,7 @@ class Timer {
     const remaining = [];
     for (const payload of pending) {
       try {
-        const data = await fetchJson('/api/score', {
+        const data = await fetchJson(`${API_BASE}/api/score`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -2831,7 +2834,7 @@ class Timer {
 
   async function submitScore(payload) {
     try {
-      const data = await fetchJson('/api/score', {
+      const data = await fetchJson(`${API_BASE}/api/score`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

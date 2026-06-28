@@ -1,11 +1,12 @@
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
 from aiohttp import web
 
 ROOT = Path(__file__).resolve().parent
-DATA_FILE = ROOT / "leaderboards.json"
+DATA_FILE = Path(os.environ.get("ARCADE_LEADERBOARD_DATA_PATH", ROOT / "leaderboards.json"))
 MAX_ENTRIES_PER_GAME = 10
 
 
@@ -76,5 +77,7 @@ app.router.add_post("/api/leaderboards/submit", submit_score)
 
 
 if __name__ == "__main__":
-    print("Arcade leaderboard server running on http://localhost:8787")
-    web.run_app(app, host="0.0.0.0", port=8787)
+    host = os.environ.get("HOST", "0.0.0.0")
+    port = int(os.environ.get("PORT", "8787"))
+    print(f"Arcade leaderboard server running on http://{host}:{port}")
+    web.run_app(app, host=host, port=port)

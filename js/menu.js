@@ -23,7 +23,7 @@ const MenuScreen = (() => {
   const REGISTER_URL = 'https://unstop.com/hackathons/osdhack-2026-open-source-developers-communityosdc-1693803?lb=';
   const ARCADE_LEADERBOARD_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ? 'http://localhost:8787'
-    : 'http://jha.jpoop.in:8787';
+    : 'https://jha.jpoop.in:6950';
 
   function isModalOpen() {
     const overlay = $('arcadeModalOverlay');

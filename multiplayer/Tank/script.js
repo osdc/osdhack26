@@ -2,7 +2,7 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const SERVER_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'ws://localhost:8765'
-    : 'wss://jha.jpoop.in:6900';
+    : 'wss://jha.jpoop.in:6940';
 
 let gameState = {
     tanks: {},

@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -7,7 +8,7 @@ from aiohttp import web
 
 
 ROOT = Path(__file__).resolve().parent
-SCORES_PATH = ROOT / "scores.json"
+SCORES_PATH = Path(os.environ.get("PACMAN_SCORES_PATH", ROOT / "scores.json"))
 STATIC_FILES = {
     "/": ROOT / "index.html",
     "/index.html": ROOT / "index.html",
@@ -169,11 +170,26 @@ async def post_score(request):
     return web.json_response({"player": player, "leaders": rank_leaders(data.get("players", {}))})
 
 
+@web.middleware
+async def cors_middleware(request, handler):
+    if request.method == "OPTIONS":
+        response = web.Response(status=204)
+    else:
+        response = await handler(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    return response
+
+
 async def create_app():
-    app = web.Application()
+    app = web.Application(middlewares=[cors_middleware])
     store = ScoreStore(SCORES_PATH)
     await store.ensure_file()
     app["store"] = store
+    app.router.add_options("/api/leaderboard", lambda _request: web.Response(status=204))
+    app.router.add_options("/api/player/{browserId}", lambda _request: web.Response(status=204))
+    app.router.add_options("/api/score", lambda _request: web.Response(status=204))
     app.router.add_get("/", serve_static)
     app.router.add_get("/index.html", serve_static)
     app.router.add_get("/style.css", serve_static)
@@ -187,5 +203,7 @@ async def create_app():
 
 if __name__ == "__main__":
     application = asyncio.run(create_app())
-    print("http://localhost:8080")
-    web.run_app(application, host="localhost", port=8080)
+    host = os.environ.get("HOST", "localhost")
+    port = int(os.environ.get("PORT", "8080"))
+    print(f"http://{host}:{port}")
+    web.run_app(application, host=host, port=port)

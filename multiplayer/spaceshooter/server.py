@@ -1,4 +1,5 @@
 import asyncio
+import os
 import random
 import time
 from pathlib import Path
@@ -361,5 +362,7 @@ async def init_app():
 
 
 if __name__ == '__main__':
-    print("Space Shooter server on http://localhost:3000")
-    web.run_app(init_app(), host='localhost', port=3000)
+    host = os.environ.get("HOST", "localhost")
+    port = int(os.environ.get("PORT", "3000"))
+    print(f"Space Shooter server on http://{host}:{port}")
+    web.run_app(init_app(), host=host, port=port)

@@ -11,7 +11,7 @@
         var GAME_HEIGHT = 720;
         var SOCKET_SERVER_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
             ? window.location.origin
-            : 'http://jha.jpoop.in:80';
+            : 'https://jha.jpoop.in:6930';
         var canvas = document.getElementById('viewport');
         var context = canvas.getContext('2d');
         var fps = 1000 / 60;
@@ -37,7 +37,7 @@
         var lastLocalShotAt = 0;
         var LEADERBOARD_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
             ? 'http://localhost:8787'
-            : 'http://jha.jpoop.in:8787';
+            : 'https://jha.jpoop.in:6950';
 
         function createAudioPool(src, volume, size) {
             var pool = [];

@@ -1,0 +1,51 @@
+name: Deploy Multiplayer VM
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/deploy-multiplayer-vm.yml'
+      - 'scripts/deploy_multiplayer_vm.sh'
+      - 'multiplayer/Tank/server.py'
+      - 'multiplayer/Tank/requirements.txt'
+      - 'multiplayer/pacman/server.py'
+      - 'multiplayer/pacman/requirements.txt'
+      - 'multiplayer/pong/server.py'
+      - 'multiplayer/pong/requirements.txt'
+      - 'multiplayer/spaceshooter/server.py'
+      - 'multiplayer/spaceshooter/requirements.txt'
+      - 'multiplayer/arcade_leaderboard/server.py'
+
+concurrency:
+  group: deploy-multiplayer-vm
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        env:
+          OSDHACK_VM_SSH_KEY: ${{ secrets.OSDHACK_VM_SSH_KEY }}
+        run: |
+          test -n "$OSDHACK_VM_SSH_KEY" || { echo "Missing GitHub secret: OSDHACK_VM_SSH_KEY"; exit 1; }
+          mkdir -p ~/.ssh
+          printf '%s\n' "$OSDHACK_VM_SSH_KEY" > ~/.ssh/osdhack_vm_key
+          chmod 600 ~/.ssh/osdhack_vm_key
+          ssh-keyscan -H 80.225.194.90 >> ~/.ssh/known_hosts
+
+      - name: Deploy multiplayer backends
+        env:
+          DEPLOY_SSH_HOST: 80.225.194.90
+          DEPLOY_SSH_USER: ubuntu
+          DEPLOY_SSH_KEY_PATH: /home/runner/.ssh/osdhack_vm_key
+        run: |
+          chmod +x scripts/deploy_multiplayer_vm.sh
+          ./scripts/deploy_multiplayer_vm.sh

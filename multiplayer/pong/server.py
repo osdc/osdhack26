@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import os
 import random
 import time
 import uuid
@@ -380,18 +381,20 @@ class GameServer:
                 await asyncio.sleep(1 / 60)
 
     async def start_server(self):
+        host = os.environ.get("HOST", "localhost")
+        port = int(os.environ.get("PORT", "8765"))
         asyncio.create_task(self.game_loop())
         server = await websockets.serve(
             self.handle_client,
-            "localhost",
-            8765,
+            host,
+            port,
             ping_interval=20,
             ping_timeout=10
         )
         print("=" * 60)
         print("🏓 MULTIPLAYER PONG SERVER STARTED 🏓")
         print("=" * 60)
-        print("Server: ws://localhost:8765")
+        print(f"Server: ws://{host}:{port}")
         print("• Room joining and spectators enabled")
         print("• First to 10 wins")
         print("=" * 60)

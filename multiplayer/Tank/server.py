@@ -1,6 +1,7 @@
 import asyncio
 import json
 import math
+import os
 import random
 import re
 import time
@@ -738,6 +739,9 @@ class GameServer:
 if __name__ == "__main__":
     server = GameServer()
     try:
-        asyncio.run(server.start_server())
+        asyncio.run(server.start_server(
+            host=os.environ.get("HOST", "localhost"),
+            port=int(os.environ.get("PORT", "8765"))
+        ))
     except KeyboardInterrupt:
         pass

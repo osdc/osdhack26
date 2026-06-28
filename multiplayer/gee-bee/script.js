@@ -18,7 +18,7 @@ const paddleWidth = 75;
 const maxBallSpeed = 7;
 const LEADERBOARD_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ? 'http://localhost:8787'
-    : 'http://jha.jpoop.in:8787';
+    : 'https://jha.jpoop.in:6950';
 
 let animationFrameId = null;
 let timerId = null;
