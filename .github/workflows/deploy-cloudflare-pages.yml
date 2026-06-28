@@ -46,7 +46,8 @@ jobs:
           rm -rf dist
           mkdir -p dist
           cp index.html dist/
-          cp -R assets css js multiplayer dist/
+          cp rulebook.pdf dist/
+          cp -R assets css js multiplayer register rulebook dist/
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3

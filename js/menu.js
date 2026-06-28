@@ -20,7 +20,7 @@ const MenuScreen = (() => {
   let registerPromptShown = false;
 
   const INLINE_DETAILS = true;
-  const REGISTER_URL = 'https://unstop.com/hackathons/osdhack-2026-open-source-developers-communityosdc-1693803?lb=';
+  const REGISTER_URL = '/register';
   const ARCADE_LEADERBOARD_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ? 'http://localhost:8787'
     : 'https://jha.jpoop.in:6950';
@@ -417,7 +417,7 @@ const MenuScreen = (() => {
         </section>
       `).join('');
     } catch (error) {
-      grid.innerHTML = '<div class="arcade-leaderboard-empty">Leaderboard offline. Start `multiplayer/arcade_leaderboard/server.py` to populate this panel.</div>';
+      grid.innerHTML = '<div class="arcade-leaderboard-empty">Leaderboard temporarily unavailable.</div>';
     }
   }
 

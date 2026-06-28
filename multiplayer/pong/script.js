@@ -192,6 +192,7 @@ function fallbackToDemo() {
   gameState.player2Name = 'AI Player';
   connectionStatus.textContent = aiRequested ? 'Local AI Mode' : 'Local AI Mode - Server unavailable';
   connectionStatus.className = 'connection-status';
+  resetBall();
   updatePlayerNames();
   updateInstructions();
   startDemoMode();
