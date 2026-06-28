@@ -37,6 +37,8 @@
       document.body.classList.add('touch-device');
     }
 
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
     /* ---- CUTSCENE ---- */
     const cinematic = document.getElementById('cinematic');
     const website   = document.querySelector('.website-container');
@@ -47,7 +49,7 @@
 
     let phase        = 'phase1';
     let cutsceneDone = false;
-    let phaseAdvanceBound = false;
+    let cutsceneSkipBound = false;
 
     function playVideo(video) {
       video.currentTime = 0;
@@ -78,32 +80,30 @@
       v2.loop = false;
       v2.pause();
       if (pressPrompt) pressPrompt.style.opacity = 0;
-      unbindPhaseAdvance();
+      unbindCutsceneSkip();
       show(v3, from);
     }
 
-    function onPhaseAdvanceInput(e) {
+    function onCutsceneSkipInput(e) {
+      if (phase === 'phase3' || phase === 'done') return;
       if (e.type === 'keydown' && e.code !== 'Space' && e.code !== 'Enter') return;
+      if (e.type !== 'keydown' && !isTouchDevice) return;
       if (e.cancelable) e.preventDefault();
       goToPhase3();
     }
 
-    function bindPhaseAdvance() {
-      if (phaseAdvanceBound) return;
-      phaseAdvanceBound = true;
-      window.addEventListener('keydown', onPhaseAdvanceInput);
-      window.addEventListener('pointerdown', onPhaseAdvanceInput);
-      window.addEventListener('touchstart', onPhaseAdvanceInput, { passive: false });
-      window.addEventListener('click', onPhaseAdvanceInput);
+    function bindCutsceneSkip() {
+      if (cutsceneSkipBound) return;
+      cutsceneSkipBound = true;
+      window.addEventListener('keydown', onCutsceneSkipInput);
+      window.addEventListener('touchstart', onCutsceneSkipInput, { passive: false });
     }
 
-    function unbindPhaseAdvance() {
-      if (!phaseAdvanceBound) return;
-      phaseAdvanceBound = false;
-      window.removeEventListener('keydown', onPhaseAdvanceInput);
-      window.removeEventListener('pointerdown', onPhaseAdvanceInput);
-      window.removeEventListener('touchstart', onPhaseAdvanceInput);
-      window.removeEventListener('click', onPhaseAdvanceInput);
+    function unbindCutsceneSkip() {
+      if (!cutsceneSkipBound) return;
+      cutsceneSkipBound = false;
+      window.removeEventListener('keydown', onCutsceneSkipInput);
+      window.removeEventListener('touchstart', onCutsceneSkipInput);
     }
 
     v1.addEventListener('ended', () => {
@@ -115,9 +115,10 @@
           pressPrompt.style.display = 'block';
           pressPrompt.textContent = 'PRESS SPACE / TAP TO CONTINUE';
         }
-        bindPhaseAdvance();
       }, 4000);
     }, { once: true });
+
+    bindCutsceneSkip();
 
     // jabardasti yahan bhi saare flags
     v1.muted = true;
@@ -134,6 +135,7 @@
       if (cutsceneDone) return;
       cutsceneDone = true;
       phase = 'done';
+      unbindCutsceneSkip();
 
       website.classList.add('visible');
 

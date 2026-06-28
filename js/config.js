@@ -210,12 +210,12 @@ const CONFIG = {
       label: 'DOWNLOAD ASSETS',
       color: '#ff8c42',
       stats: { utility: 5, variety: 4, size: 2 },
-      info: 'Snag the official OSDHACK\'26 asset bundle: retro graphics, pixelated sound effects, color palette codes, and brand templates.',
+      info: 'Snag the official OSDHACK\'26 downloads, including the participant rulebook and the official retro asset pack.',
       actionText: 'GET ASSETS PACK',
-      actionLink: '#',
+      actionLink: '/rulebook.pdf',
       popup: {
         title: 'DOWNLOAD ASSETS',
-        body: '<div class="modal-section"><div class="modal-section-title">Official Asset Bundle</div><p>The OSDHACK\'26 asset pack includes retro graphics, pixel sound effects, color palettes, and brand templates to level up your project.</p></div><div class="modal-section"><div class="modal-section-title">What\'s Inside</div><ul><li>Retro pixel graphics & sprites</li><li>Sound effect samples</li><li>Official color palette</li><li>Brand templates & logos</li></ul></div>'
+        body: '<div class="modal-section"><div class="modal-section-title">Official Downloads</div><p>Grab the current participant rulebook and the official retro asset references from one place.</p></div><div class="modal-section"><div class="modal-section-title">Rulebook PDF</div><a class="modal-retro-btn" href="/rulebook.pdf" target="_blank">DOWNLOAD RULEBOOK</a></div><div class="modal-section"><div class="modal-section-title">What\'s Inside The Asset Pack</div><ul><li>Retro pixel graphics & sprites</li><li>Sound effect samples</li><li>Official color palette</li><li>Brand templates & logos</li></ul></div>'
       },
       iconPath: 'assets/icons/folder.png'
     },

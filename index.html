@@ -8,7 +8,27 @@
   <title>OSDHACK'26 — Arcade Hackathon</title>
   <meta name="description" content="OSDHACK'26 — a retro pizza-arcade hackathon experience. Navigate the CRT game menu to explore rules, tracks, prizes, and more!">
 
+  <script>
+    (function () {
+      function setAppHeight() {
+        var viewportHeight = window.visualViewport
+          ? window.visualViewport.height
+          : window.innerHeight;
+        document.documentElement.style.setProperty('--app-height', Math.round(viewportHeight) + 'px');
+      }
+
+      setAppHeight();
+      window.addEventListener('resize', setAppHeight, { passive: true });
+      window.addEventListener('orientationchange', setAppHeight, { passive: true });
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', setAppHeight, { passive: true });
+      }
+    })();
+  </script>
+
   <!-- font lafda -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <!-- css file set -->
@@ -65,8 +85,8 @@
 
     html, body {
       width: 100%;
-      min-height: 100%;
-      height: var(--app-height, 100dvh);
+      min-height: 100svh;
+      height: var(--app-height, 100svh);
       overflow: hidden;
       background: #000;
       font-family: 'Press Start 2P', monospace;
