@@ -76,7 +76,7 @@
     }
 
     function show(to, from) {
-      const playPromise = playVideo(to);
+      playVideo(to);
       requestAnimationFrame(() => {
         to.style.opacity = '1';
         if (from) {
@@ -85,25 +85,43 @@
           }, { once: true });
         }
       });
-      return playPromise;
+    }
+
+    function holdPhase3EndFrame(from) {
+      phase = 'awaiting-entry';
+      phase3ReadyToEnter = true;
+      hidePrompt();
+      requestAnimationFrame(() => {
+        v3.style.opacity = '1';
+        if (from) {
+          v3.addEventListener('transitionend', () => {
+            from.style.opacity = '0';
+          }, { once: true });
+        }
+      });
+
+      const seekToEndFrame = () => {
+        const safeDuration = Number.isFinite(v3.duration) ? v3.duration : 0;
+        const endFrameTime = safeDuration > 0.08 ? safeDuration - 0.05 : Math.max(safeDuration, 0);
+        v3.currentTime = endFrameTime;
+        v3.pause();
+      };
+
+      if (v3.readyState >= HTMLMediaElement.HAVE_METADATA) {
+        seekToEndFrame();
+      } else {
+        v3.addEventListener('loadedmetadata', seekToEndFrame, { once: true });
+        v3.load();
+      }
     }
 
     function goToPhase3() {
-      if (phase === 'phase3' || phase === 'done') return;
+      if (phase === 'phase3' || phase === 'awaiting-entry' || phase === 'done') return;
       const from = phase === 'loop' ? v2 : v1;
-      phase = 'phase3';
       phase3ReadyToEnter = false;
       v2.loop = false;
       v2.pause();
-      hidePrompt();
-      const playPromise = show(v3, from);
-      if (playPromise && typeof playPromise.catch === 'function') {
-        playPromise.catch(() => {
-          phase = 'awaiting-entry';
-          phase3ReadyToEnter = true;
-          setPrompt('PRESS SPACE / TAP TO ENTER');
-        });
-      }
+      holdPhase3EndFrame(from);
     }
 
     function enterWebsite() {
@@ -212,14 +230,6 @@
     } else {
       v1.addEventListener('canplay', () => playVideo(v1), { once: true });
     }
-
-    // phase3 - wait for explicit enter input
-    v3.addEventListener('ended', () => {
-      if (cutsceneDone) return;
-      phase = 'awaiting-entry';
-      phase3ReadyToEnter = true;
-      setPrompt('PRESS SPACE / TAP TO ENTER');
-    }, { once: true });
 
   });
 })();
