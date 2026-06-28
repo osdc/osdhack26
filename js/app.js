@@ -3,14 +3,13 @@
  * ============================================================
  * PURPOSE:
  *   The master controller that boots the CRT, then chains:
- *   Loading Screen → Start Screen → Main Menu.
+ *   Start Screen → Main Menu.
  *
  * INITIALIZATION ORDER:
  *   1. DOM loaded
  *   2. CRT power-on boot animation plays
- *   3. LoadingScreen.start() — shows pizza loading bar & facts
- *   4. StartScreen.show() — "PRESS START" attract screen
- *   5. MenuScreen.show() — circular navigation hub
+ *   3. StartScreen.show() — "PRESS START" attract screen
+ *   4. MenuScreen.show() — circular navigation hub
  *
  * CUSTOMIZATION:
  *   All behavior is driven by CONFIG. No changes needed here
@@ -125,8 +124,12 @@
             cinematic.remove();
           }, { once: true });
 
+          document.body.classList.add('crt-booting');
           CRT.boot().then(() => {
-            LoadingScreen.start(() => {
+            document.body.classList.remove('crt-booting');
+            document.body.classList.add('crt-ready');
+
+            requestAnimationFrame(() => {
               StartScreen.show(() => {
                 MenuScreen.show();
               });

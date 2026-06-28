@@ -15,10 +15,10 @@
   <link rel="stylesheet" href="css/cutscene.css">      <!-- startting cutscene masti -->
   <link rel="stylesheet" href="css/animations.css">    <!-- shared animations -->
   <link rel="stylesheet" href="css/crt.css">           <!-- crt effect -->
-  <link rel="stylesheet" href="css/loading.css">       <!-- loading screen -->
+<!-- loading.css removed -->
   <link rel="stylesheet" href="css/start.css">         <!-- start screen -->
   <link rel="stylesheet" href="css/menu.css">          <!-- menu style -->
-  <link rel="stylesheet" href="css/pizza.css">         <!-- pizza magic -->
+  <link rel="stylesheet" href="css/pizza.css">         <!-- pizza magic --> 
   <link rel="stylesheet" href="css/responsive.css">    <!-- responsive queries -->
 
 
@@ -27,9 +27,33 @@
   <link rel="preload" href="assets/video/loop.mp4" as="video">
   <link rel="preload" href="assets/video/phase3.mp4" as="video">
   <style>
-    /* custom pizza cursor — tilted left, bigger, pixelated */
-    html {
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48' style='shape-rendering:crispEdges'%3E%3Cg transform='rotate(-25 24 24)'%3E%3Cpolygon points='24,4 38,36 10,36' fill='%23f5c842' stroke='%23c89f2a' stroke-width='3'/%3E%3Cpolygon points='24,10 34,32 14,32' fill='%23f0b030'/%3E%3Ccircle cx='18' cy='26' r='4' fill='%23cc3333'/%3E%3Ccircle cx='30' cy='24' r='4' fill='%23cc3333'/%3E%3Ccircle cx='24' cy='18' r='4' fill='%23cc3333'/%3E%3Ccircle cx='20' cy='32' r='3' fill='%23cc3333'/%3E%3Ccircle cx='28' cy='30' r='3' fill='%23cc3333'/%3E%3C/g%3E%3C/svg%3E") 6 8, auto;
+    /* custom pizza cursor — CSS vars, scoped only inside #crtScreen */
+    :root {
+      --pizza-cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48' style='shape-rendering:crispEdges'%3E%3Cg transform='rotate(-25 24 24)'%3E%3Cpolygon points='24,4 38,36 10,36' fill='%23f5c842' stroke='%23c89f2a' stroke-width='3'/%3E%3Cpolygon points='24,10 34,32 14,32' fill='%23f0b030'/%3E%3Ccircle cx='18' cy='26' r='4' fill='%23cc3333'/%3E%3Ccircle cx='30' cy='24' r='4' fill='%23cc3333'/%3E%3Ccircle cx='24' cy='18' r='4' fill='%23cc3333'/%3E%3Ccircle cx='20' cy='32' r='3' fill='%23cc3333'/%3E%3Ccircle cx='28' cy='30' r='3' fill='%23cc3333'/%3E%3C/g%3E%3C/svg%3E") 6 8, auto;
+      --pizza-cursor-pointer: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48' style='shape-rendering:crispEdges'%3E%3Cg transform='rotate(-25 24 24)'%3E%3Cpolygon points='24,4 38,36 10,36' fill='%23f5c842' stroke='%23c89f2a' stroke-width='3'/%3E%3Cpolygon points='24,10 34,32 14,32' fill='%23f0b030'/%3E%3Ccircle cx='18' cy='26' r='4' fill='%23cc3333'/%3E%3Ccircle cx='30' cy='24' r='4' fill='%23cc3333'/%3E%3Ccircle cx='24' cy='18' r='4' fill='%23cc3333'/%3E%3Ccircle cx='20' cy='32' r='3' fill='%23cc3333'/%3E%3Ccircle cx='28' cy='30' r='3' fill='%23cc3333'/%3E%3C/g%3E%3C/svg%3E") 6 8, pointer;
+    }
+
+    html, body {
+      cursor: auto;
+    }
+
+    #crtScreen {
+      cursor: auto;
+    }
+
+    body.crt-ready #crtScreen {
+      cursor: var(--pizza-cursor);
+    }
+
+    body.crt-ready #crtScreen a,
+    body.crt-ready #crtScreen button,
+    body.crt-ready #crtScreen .press-start-text,
+    body.crt-ready #crtScreen .grid-node,
+    body.crt-ready #crtScreen .grid-node *,
+    body.crt-ready #crtScreen .details-action-btn,
+    body.crt-ready #crtScreen .modal-close-btn,
+    body.crt-ready #crtScreen .modal-retro-btn {
+      cursor: var(--pizza-cursor-pointer);
     }
 
     /* basic setup */
@@ -37,12 +61,6 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-    }
-
-    /* clickable elements keep pointer for UX */
-    a, button, .sfx-toggle, .press-start-text,
-    .grid-node, .grid-node *, .details-action-btn {
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48' style='shape-rendering:crispEdges'%3E%3Cg transform='rotate(-25 24 24)'%3E%3Cpolygon points='24,4 38,36 10,36' fill='%23f5c842' stroke='%23c89f2a' stroke-width='3'/%3E%3Cpolygon points='24,10 34,32 14,32' fill='%23f0b030'/%3E%3Ccircle cx='18' cy='26' r='4' fill='%23cc3333'/%3E%3Ccircle cx='30' cy='24' r='4' fill='%23cc3333'/%3E%3Ccircle cx='24' cy='18' r='4' fill='%23cc3333'/%3E%3Ccircle cx='20' cy='32' r='3' fill='%23cc3333'/%3E%3Ccircle cx='28' cy='30' r='3' fill='%23cc3333'/%3E%3C/g%3E%3C/svg%3E") 6 8, pointer;
     }
 
     html, body {
@@ -105,26 +123,12 @@
   </div>
 
 <div class="website-container">
-  <!-- tv gol filter -->
+  <!-- tv gol filter — real barrel bulge via SVG displacement -->
 <svg width="0" height="0" style="position:absolute">
   <defs>
-    <!-- map jugaad -->
-    <filter id="barrel-distortion" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
-      <!-- pehla step -->
-      <feFlood flood-color="rgb(128,128,128)" result="mid"/>
-      <feComposite in="mid" in2="SourceGraphic" operator="in" result="base"/>
-      <!-- thoda blur -->
-      <feGaussianBlur in="SourceGraphic" stdDeviation="0.4" result="blurred"/>
-      <!-- distortion setup -->
-      <feDisplacementMap in="blurred" in2="SourceGraphic"
-        scale="0"
-        xChannelSelector="R"
-        yChannelSelector="G"
-        result="warped"/>
-      <!-- halka glow -->
-      <feMerge>
-        <feMergeNode in="warped"/>
-      </feMerge>
+    <filter id="crt-bulge-filter" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+      <feImage result="map" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3CradialGradient id='g'%3E%3Cstop offset='0%25' stop-color='%23808080'/%3E%3Cstop offset='100%25' stop-color='%23000'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23g)'/%3E%3C/svg%3E" preserveAspectRatio="none"/>
+      <feDisplacementMap in="SourceGraphic" in2="map" scale="10" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
   </defs>
 </svg>
@@ -136,9 +140,7 @@
 <!-- main dabba -->
 <div class="crt-monitor">
 
-  <!-- batti aur naam -->
-  <div class="crt-power-led"></div>
-  <div class="crt-brand">OSDHACK · ARCADE</div>
+  <!-- batti aur naam (removed) -->
 
   <!-- andar ka sheesha -->
   <div class="crt-screen" id="crtScreen">
@@ -152,11 +154,7 @@
     <div class="crt-bloom"></div>
     <div class="crt-flicker" id="crtFlicker"></div>
 
-    <!-- wave animations -->
-    <div class="crt-wave-h"></div>
-    <div class="crt-wave-roll"></div>
-    <div class="crt-wave-jitter"></div>
-
+    <!-- wave animations (removed) -->
     <!-- boot screen -->
     <div class="crt-boot-overlay" id="crtBootOverlay">
       <div class="crt-boot-scanline" id="crtBootScanline"></div>
@@ -174,71 +172,7 @@
     </div>
 
 
-    <!-- screen 1 load -->
-    <div class="loading-screen" id="loadingScreen">
-      
-      <!-- Content centered in middle -->
-      <div class="loading-content">
-        
-        <!-- Centerpiece mascot -->
-        <div class="loading-centerpiece">
-          <div class="pizza-mascot-container">
-            <svg class="pizza-mascot-svg" xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 48 48" style="shape-rendering:crispEdges">
-              <g class="pizza-slice">
-                <polygon points="24,4 38,36 10,36" fill="#f5c842" stroke="#c89f2a" stroke-width="2"/>
-                <polygon points="24,10 34,32 14,32" fill="#f0b030"/>
-                <circle cx="18" cy="26" r="4" fill="#cc3333"/>
-                <circle cx="30" cy="24" r="4" fill="#cc3333"/>
-                <circle cx="24" cy="18" r="4" fill="#cc3333"/>
-                <circle cx="20" cy="32" r="3" fill="#cc3333"/>
-                <circle cx="28" cy="30" r="3" fill="#cc3333"/>
-                <path class="cheese-stretch stretch-1" d="M16,36 L16,42" stroke="#f0b030" stroke-width="2" stroke-linecap="round"/>
-                <path class="cheese-stretch stretch-2" d="M24,36 L24,44" stroke="#f0b030" stroke-width="2" stroke-linecap="round"/>
-                <path class="cheese-stretch stretch-3" d="M32,36 L32,40" stroke="#f0b030" stroke-width="2" stroke-linecap="round"/>
-              </g>
-            </svg>
-            <div class="mascot-shadow"></div>
-          </div>
-        </div>
-
-        <div class="loading-text-retro">LOADING...</div>
-
-        <!-- pizza bar jugaad -->
-        <div class="pizza-bar-container">
-          <div class="pizza-bar-track" id="loadingBarTrack">
-            <div class="pizza-segment" data-i="0"></div>
-            <div class="pizza-segment" data-i="1"></div>
-            <div class="pizza-segment" data-i="2"></div>
-            <div class="pizza-segment" data-i="3"></div>
-            <div class="pizza-segment" data-i="4"></div>
-            <div class="pizza-segment" data-i="5"></div>
-            <div class="pizza-segment" data-i="6"></div>
-            <div class="pizza-segment" data-i="7"></div>
-            <div class="pizza-segment" data-i="8"></div>
-            <div class="pizza-segment" data-i="9"></div>
-          </div>
-          <div class="pizza-bar-percent" id="pizzaBarPercent">0%</div>
-        </div>
-
-        <!-- Animated Status Line -->
-        <div class="animated-status-line" id="animatedStatusLine">
-          Loading Tracks...
-        </div>
-
-      </div>
-
-      <!-- pizza tip box at bottom -->
-      <div class="pizza-tip-box">
-        <div class="pizza-tip-icon-wrapper">
-          <svg class="pizza-tip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFD700"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 2.96 5.77C8.42 15.25 9 16.03 9 17v1h6v-1c0-.97.58-1.75 1.04-2.23C17.81 13.47 19 11.38 19 9c0-3.86-3.14-7-7-7z"/></svg>
-        </div>
-        <div class="pizza-tip-content">
-          <div class="pizza-tip-heading">Pizza Tip</div>
-          <div class="pizza-tip-text" id="pizzaTipText">Initializing pizza knowledge...</div>
-        </div>
-      </div>
-
-    </div>
+    <!-- loading screen removed -->
 
 
     <!-- start screen bhai -->
@@ -278,8 +212,12 @@
           </a>
         </div>
         <div class="hud-item"><span class="hud-label">TIME</span> <span class="hud-value" id="hudCountdownVal">--</span></div>
-        <div class="hud-item"><span class="hud-label">EXPLORED</span> <span class="hud-value" id="hudExploredVal">00/15</span></div>
-        <div class="hud-item"><span class="hud-label">STAGE</span> <span class="hud-value" id="hudStageVal">01</span></div>
+        <div class="hud-item"><span class="hud-label">EXPLORED</span> <span class="hud-value" id="hudExploredVal">00/14</span></div>
+        <div class="hud-item hud-lives" id="hudLives" aria-label="Lives: two and a half">
+          <span class="pixel-heart full" aria-hidden="true"></span>
+          <span class="pixel-heart full" aria-hidden="true"></span>
+          <span class="pixel-heart half" aria-hidden="true"></span>
+        </div>
       </div>
 
       <!-- Main Dashboard: Grid & Detail Panel -->
@@ -344,7 +282,7 @@
 <script src="js/audio.js"></script>
 <script src="js/gamepad.js"></script>
 <script src="js/crt.js"></script>
-<script src="js/loading.js"></script>
+<!-- loading.js removed -->
 <script src="js/start.js"></script>
 <script src="js/menu.js"></script>
 <script src="js/pizza.js"></script>

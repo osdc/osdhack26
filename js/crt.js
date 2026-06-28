@@ -87,13 +87,13 @@ const CRT = (() => {
   function startAmbientEffects() {
     const flicker = $('crtFlicker');
 
-    // Random flicker every 3–8 seconds
+    // Random flicker every 8–16 seconds (less frequent, softer)
     function scheduleFlicker() {
-      const delay = Utils.randInt(3000, 8000);
+      const delay = Utils.randInt(8000, 16000);
       setTimeout(() => {
         if (flicker) {
           flicker.classList.add('flash');
-          setTimeout(() => flicker.classList.remove('flash'), 80);
+          setTimeout(() => flicker.classList.remove('flash'), 50);
         }
         scheduleFlicker();
       }, delay);
