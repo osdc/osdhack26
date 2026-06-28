@@ -24,6 +24,7 @@ let roomId = '';
 let requestedRoomId = '';
 let connected = false;
 let demoMode = false;
+let aiRequested = false;
 let isSpectator = false;
 let gameOverShown = false;
 
@@ -51,6 +52,7 @@ const nameModal = document.getElementById('nameModal');
 const nameInput = document.getElementById('nameInput');
 const roomInput = document.getElementById('roomInput');
 const joinGameBtn = document.getElementById('joinGameBtn');
+const playAIBtn = document.getElementById('playAIBtn');
 const player1NameEl = document.getElementById('player1Name');
 const player2NameEl = document.getElementById('player2Name');
 
@@ -188,7 +190,7 @@ function fallbackToDemo() {
   gameState.gameActive = true;
   gameState.player1Name = playerName || 'Player 1';
   gameState.player2Name = 'AI Player';
-  connectionStatus.textContent = 'Demo Mode - No server connection';
+  connectionStatus.textContent = aiRequested ? 'Local AI Mode' : 'Local AI Mode - Server unavailable';
   connectionStatus.className = 'connection-status';
   updatePlayerNames();
   updateInstructions();
@@ -305,7 +307,7 @@ function updateInstructions() {
     return;
   }
   const controls = playerNumber === 1 ? 'W / S keys' : 'UP / DOWN keys';
-  const mode = connected ? 'Multiplayer' : 'Demo Mode';
+  const mode = connected ? 'Multiplayer' : 'Local AI';
   instructions.innerHTML = `<strong>Instructions:</strong><br>${mode} - You are Player ${playerNumber || 1}<br>Room: ${roomId || 'AUTO'}<br>Controls: ${controls}<br>First to 10 wins!`;
 }
 
@@ -353,6 +355,7 @@ quitBtn.onclick = function() {
   }
   connected = false;
   demoMode = false;
+  aiRequested = false;
   playerName = '';
   requestedRoomId = '';
   resetClientState();
@@ -532,11 +535,33 @@ joinGameBtn.onclick = function() {
   }
   playerName = name;
   requestedRoomId = roomInput.value.trim().toUpperCase();
+  aiRequested = false;
   nameModal.style.display = 'none';
   resetClientState();
   connectionStatus.textContent = 'Attempting to connect...';
   updatePlayerNames();
   connectWebSocket();
+};
+
+playAIBtn.onclick = function() {
+  const name = nameInput.value.trim();
+  if (!name) {
+    alert('Please enter a name!');
+    return;
+  }
+  if (demoInterval) {
+    clearInterval(demoInterval);
+    demoInterval = null;
+  }
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.close();
+  }
+  playerName = name;
+  requestedRoomId = '';
+  aiRequested = true;
+  nameModal.style.display = 'none';
+  resetClientState();
+  fallbackToDemo();
 };
 
 nameInput.addEventListener('keypress', function(e) {

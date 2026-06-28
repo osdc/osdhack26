@@ -16,6 +16,9 @@ const ballRadius = 7;
 const paddleHeight = 20;
 const paddleWidth = 75;
 const maxBallSpeed = 7;
+const LEADERBOARD_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:8787'
+    : 'http://jha.jpoop.in:8787';
 
 let animationFrameId = null;
 let timerId = null;
@@ -31,6 +34,7 @@ let rightPressed = false;
 let leftPressed = false;
 let bricks = [];
 let collisionShapes = [];
+let leaderboardSubmitted = false;
 
 function createSound(src, volume, count) {
     const pool = [];
@@ -51,6 +55,49 @@ function createSound(src, volume, count) {
 
 function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
+}
+
+function getStoredPlayerName() {
+    try {
+        return localStorage.getItem('arcadePlayerName') || '';
+    } catch (error) {
+        return '';
+    }
+}
+
+function setStoredPlayerName(name) {
+    try {
+        localStorage.setItem('arcadePlayerName', name);
+    } catch (error) {}
+}
+
+async function submitLeaderboardScore(scoreValue) {
+    if (leaderboardSubmitted || !scoreValue || scoreValue <= 0) {
+        return;
+    }
+    let playerName = getStoredPlayerName();
+    if (!playerName) {
+        playerName = (window.prompt('Enter a name for the leaderboard:', 'PLAYER') || 'PLAYER').trim();
+        if (!playerName) {
+            playerName = 'PLAYER';
+        }
+        setStoredPlayerName(playerName);
+    }
+    leaderboardSubmitted = true;
+    try {
+        await fetch(`${LEADERBOARD_URL}/api/leaderboards/submit`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                game: 'geebee',
+                player: playerName.slice(0, 20),
+                score: Math.max(0, Math.floor(scoreValue))
+            })
+        });
+    } catch (error) {
+        leaderboardSubmitted = false;
+        console.warn('Leaderboard submit failed:', error);
+    }
 }
 
 function getLayout() {
@@ -77,7 +124,7 @@ function getLayout() {
         leftSide1: { x: borderWidth, y: 260, width: 45, height: borderWidth - 5, color: '#2941fc' },
         leftSide2: { x: borderWidth + 45, y: 260, width: borderWidth - 5, height: 80, color: '#2941fc' },
         rightSide1: { x: WORLD_WIDTH - borderWidth - 45, y: 260, width: 45, height: borderWidth - 5, color: '#2941fc' },
-        rightSide2: { x: WORLD_WIDTH - borderWidth - 15, y: 260, width: borderWidth - 5, height: 80, color: '#2941fc' },
+        rightSide2: { x: WORLD_WIDTH - borderWidth - 45 - (borderWidth - 5), y: 260, width: borderWidth - 5, height: 80, color: '#2941fc' },
         leftBottomWall: { x: 0, y: 510, width: borderWidth, height: 80, color: '#8B03E9' },
         rightBottomWall: { x: WORLD_WIDTH - borderWidth, y: 510, width: borderWidth, height: 80, color: '#8B03E9' },
         leftBottomCap: { x: 0, y: 590, width: borderWidth, height: 30, color: '#EEE' },
@@ -106,16 +153,18 @@ function buildBricks() {
     bricks = [];
     const brickPadding = 4;
     const brickOffsetTop = 28;
-    const brickOffsetLeft = 92;
     const brickHeight = 13;
     const mainBrickWidth = 24;
     const sideBrickLength = 26;
+    const topRowPattern = [7, 9, 11, 9];
 
-    for (let row = 0; row < 3; row++) {
-        for (let column = 0; column < 11; column++) {
+    topRowPattern.forEach((count, rowIndex) => {
+        const totalWidth = count * mainBrickWidth + (count - 1) * brickPadding;
+        const startX = Math.round((WORLD_WIDTH - totalWidth) / 2);
+        for (let column = 0; column < count; column++) {
             bricks.push({
-                x: 88 + column * (mainBrickWidth + brickPadding),
-                y: brickOffsetTop + row * (brickHeight + brickPadding),
+                x: startX + column * (mainBrickWidth + brickPadding),
+                y: brickOffsetTop + rowIndex * (brickHeight + brickPadding),
                 width: mainBrickWidth,
                 height: brickHeight,
                 color: '#E903BB',
@@ -123,12 +172,12 @@ function buildBricks() {
                 active: true
             });
         }
-    }
+    });
 
     for (let row = 0; row < 5; row++) {
         bricks.push({
             x: 34,
-            y: brickOffsetLeft + row * (sideBrickLength + brickPadding),
+            y: 98 + row * (sideBrickLength + brickPadding),
             width: brickHeight,
             height: sideBrickLength,
             color: '#2941fc',
@@ -137,7 +186,7 @@ function buildBricks() {
         });
         bricks.push({
             x: WORLD_WIDTH - 47,
-            y: brickOffsetLeft + row * (sideBrickLength + brickPadding),
+            y: 98 + row * (sideBrickLength + brickPadding),
             width: brickHeight,
             height: sideBrickLength,
             color: '#2941fc',
@@ -146,10 +195,10 @@ function buildBricks() {
         });
     }
 
-    for (let row = 0; row < 3; row++) {
+    [250, 274, 298].forEach(yPos => {
         bricks.push({
             x: 48,
-            y: 248 + row * 24,
+            y: yPos,
             width: mainBrickWidth,
             height: brickHeight,
             color: '#2941fc',
@@ -158,14 +207,14 @@ function buildBricks() {
         });
         bricks.push({
             x: WORLD_WIDTH - 72,
-            y: 248 + row * 24,
+            y: yPos,
             width: mainBrickWidth,
             height: brickHeight,
             color: '#2941fc',
             score: 50,
             active: true
         });
-    }
+    });
 }
 
 function updateCollisionShapes() {
@@ -352,12 +401,14 @@ function endGame(win) {
     document.getElementById('final-score').textContent = `SCORE: ${score}`;
     document.querySelector('#game-over h2').textContent = win ? 'YOU WIN!' : 'GAME OVER';
     document.getElementById('game-over').style.display = 'block';
+    submitLeaderboardScore(score);
 }
 
 function restartGame() {
     document.getElementById('game-over').style.display = 'none';
     score = 0;
     timeCount = 60;
+    leaderboardSubmitted = false;
     x = WORLD_WIDTH / 2;
     y = WORLD_HEIGHT - 60;
     dx = 4;
@@ -423,6 +474,28 @@ function allBricksDestroyed() {
     return bricks.every(brick => !brick.active);
 }
 
+function rescueBallFromSidePocket(nextX, nextY) {
+    const inPocketY = nextY > 486 && nextY < 590;
+    if (!inPocketY) {
+        return false;
+    }
+    if (nextX < 72) {
+        x = 86;
+        dx = Math.abs(dx || 4);
+        dy = -Math.max(3, Math.abs(dy));
+        sfx.bounce();
+        return true;
+    }
+    if (nextX > WORLD_WIDTH - 72) {
+        x = WORLD_WIDTH - 86;
+        dx = -Math.abs(dx || 4);
+        dy = -Math.max(3, Math.abs(dy));
+        sfx.bounce();
+        return true;
+    }
+    return false;
+}
+
 function updateBall() {
     let nextX = x + dx;
     let nextY = y + dy;
@@ -432,6 +505,11 @@ function updateBall() {
     handleStaticCollisions(nextX, nextY);
     nextX = x + dx;
     nextY = y + dy;
+
+    if (rescueBallFromSidePocket(nextX, nextY)) {
+        nextX = x + dx;
+        nextY = y + dy;
+    }
 
     const paddleTop = WORLD_HEIGHT - paddleHeight - 8;
     if (nextY + ballRadius >= paddleTop) {

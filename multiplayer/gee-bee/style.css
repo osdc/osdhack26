@@ -6,7 +6,10 @@
 }
 
 body {
-    background-color: #000;
+    background:
+        radial-gradient(circle at top, rgba(233, 3, 187, 0.18), transparent 42%),
+        radial-gradient(circle at bottom, rgba(41, 65, 252, 0.2), transparent 48%),
+        #000;
     font-family: 'Courier New', monospace;
     min-height: 100vh;
     display: flex;
@@ -17,7 +20,7 @@ body {
 
 #game-container {
     position: relative;
-    width: min(100vw - 24px, 560px);
+    width: min(100vw - 24px, 620px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -40,7 +43,7 @@ body {
 #score-display,
 #time-display {
     color: white;
-    font-size: 24px;
+    font-size: clamp(18px, 2.6vw, 24px);
     font-family: 'Courier New', monospace;
     text-shadow: 2px 2px 0 black;
 }
@@ -48,6 +51,7 @@ body {
 #game-box {
     position: relative;
     width: 100%;
+    aspect-ratio: 560 / 640;
     background: rgba(3, 4, 3, 0.99);
     border: 8px solid #f0f;
     border-radius: 22px;
@@ -58,7 +62,7 @@ body {
 canvas {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
     background: transparent;
     image-rendering: pixelated;
     image-rendering: crisp-edges;

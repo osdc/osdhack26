@@ -32,6 +32,12 @@
             playerId: null,
             roomId: null
         };
+        var lastMultiplayerSnapshot = null;
+        var leaderboardSubmitted = false;
+        var lastLocalShotAt = 0;
+        var LEADERBOARD_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+            ? 'http://localhost:8787'
+            : 'http://jha.jpoop.in:8787';
 
         function createAudioPool(src, volume, size) {
             var pool = [];
@@ -72,6 +78,92 @@
         }
 
         resizeCanvasDisplay();
+
+        function getStoredPlayerName() {
+            try {
+                return localStorage.getItem('arcadePlayerName') || '';
+            } catch (error) {
+                return '';
+            }
+        }
+
+        function setStoredPlayerName(name) {
+            try {
+                localStorage.setItem('arcadePlayerName', name);
+            } catch (error) {}
+        }
+
+        async function submitLeaderboardScore(gameKey, scoreValue) {
+            if (leaderboardSubmitted || !scoreValue || scoreValue <= 0) {
+                return;
+            }
+            var playerName = getStoredPlayerName();
+            if (!playerName) {
+                playerName = (window.prompt('Enter a name for the leaderboard:', 'PLAYER') || 'PLAYER').trim();
+                if (!playerName) {
+                    playerName = 'PLAYER';
+                }
+                setStoredPlayerName(playerName);
+            }
+            leaderboardSubmitted = true;
+            try {
+                await fetch(LEADERBOARD_URL + '/api/leaderboards/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        game: gameKey,
+                        player: playerName.slice(0, 20),
+                        score: Math.max(0, Math.floor(scoreValue))
+                    })
+                });
+            } catch (error) {
+                leaderboardSubmitted = false;
+                console.warn('Leaderboard submit failed:', error);
+            }
+        }
+
+        function getAliveCount(items) {
+            return (items || []).filter(function(item) {
+                return item.alive;
+            }).length;
+        }
+
+        function applyMultiplayerSfxFromState(data) {
+            if (!lastMultiplayerSnapshot) {
+                lastMultiplayerSnapshot = data;
+                return;
+            }
+
+            if (
+                (data.bullets || []).length > (lastMultiplayerSnapshot.bullets || []).length &&
+                Date.now() - lastLocalShotAt > 120
+            ) {
+                sfx.shoot();
+            }
+
+            if (getAliveCount(data.enemies) < getAliveCount(lastMultiplayerSnapshot.enemies)) {
+                sfx.explosion();
+            }
+
+            var currentPlayers = data.players || [];
+            var previousPlayers = lastMultiplayerSnapshot.players || [];
+            currentPlayers.forEach(function(playerState) {
+                var previousState = previousPlayers.find(function(entry) {
+                    return entry.id === playerState.id;
+                });
+                if (!previousState) {
+                    return;
+                }
+                if (playerState.health < previousState.health) {
+                    sfx.hit();
+                }
+                if (previousState.alive && !playerState.alive) {
+                    sfx.explosion();
+                }
+            });
+
+            lastMultiplayerSnapshot = data;
+        }
 
         function State(name, updater, renderer) {
             this.name = name;
@@ -358,6 +450,8 @@
 
                 if ((inputManager.shooting || game.autoShoot) && this.bulletTimer >= this.bulletCoolDown) {
                     gameState.socket.emit('playerShoot', {});
+                    lastLocalShotAt = Date.now();
+                    sfx.shoot();
                     this.bulletTimer = 0;
                 }
 
@@ -841,6 +935,7 @@
             game.showUI('game_over');
             document.querySelector('#final_score').innerHTML = 'FINAL SCORE: ' + game.score;
             sfx.gameover();
+            submitLeaderboardScore('spaceshooter', game.score);
 
             document.getElementById('boss-health').style.display = 'none';
             document.getElementById('boss-name').style.display = 'none';
@@ -1308,6 +1403,8 @@
             this.score = 0;
             this.lives = 3;
             this.kills = 0;
+            this.paused = false;
+            leaderboardSubmitted = false;
             this.updateScore();
             this.updateLives();
             this.updateKills();
@@ -1329,6 +1426,17 @@
             }
 
             console.log('Showing UI:', name);
+        }
+
+        Game.prototype.togglePause = function(forceState) {
+            if (!this.currentState || this.currentState.name !== 'game') {
+                return;
+            }
+            this.paused = typeof forceState === 'boolean' ? forceState : !this.paused;
+            var pauseEl = document.getElementById('pause');
+            if (pauseEl) {
+                pauseEl.style.display = this.paused ? 'flex' : 'none';
+            }
         }
 
         Game.prototype.updateScore = function() {
@@ -1383,7 +1491,9 @@
             var dt = now - then;
             if (dt <= fps) return;
             then = now - (dt % fps);
-            this.update();
+            if (!(this.paused && this.currentState && this.currentState.name === 'game')) {
+                this.update();
+            }
             this.render(context);
         }
 
@@ -1413,6 +1523,7 @@
             gameState.socket = null;
             gameState.playerId = null;
             gameState.roomId = null;
+            lastMultiplayerSnapshot = null;
         }
 
         function returnToTitle(options) {
@@ -1447,6 +1558,9 @@
                         returnToTitle({ disconnectSocket: gameState.isMultiplayer });
                     } else if (state && game.currentState.name === 'game' && gameState.isMultiplayer) {
                         this.reviveTeammate();
+                    } else if (state && game.currentState.name === 'game' && game.paused) {
+                        game.togglePause(false);
+                        returnToTitle({ disconnectSocket: gameState.isMultiplayer });
                     }
                     break;
                 case START:
@@ -1460,7 +1574,11 @@
                     break;
                 case ESCAPE:
                     if (state) {
-                        returnToTitle({ disconnectSocket: gameState.isMultiplayer });
+                        if (game.currentState.name === 'game') {
+                            game.togglePause();
+                        } else {
+                            returnToTitle({ disconnectSocket: gameState.isMultiplayer });
+                        }
                     }
                     break;
             }
@@ -1505,6 +1623,7 @@
                     if (data.success) {
                         gameState.playerId = data.playerId;
                         gameState.roomId = data.roomId;
+                        lastMultiplayerSnapshot = null;
                         if (data.worldWidth && data.worldHeight) {
                             GAME_WIDTH = data.worldWidth;
                             GAME_HEIGHT = data.worldHeight;
@@ -1528,6 +1647,7 @@
 
                 gameState.socket.on('gameState', (data) => {
                     if (gameState.isMultiplayer && game.currentState.name === 'game') {
+                        applyMultiplayerSfxFromState(data);
                         game.currentState.enemyList.forEach(enemy => enemy.alive = false);
                         game.currentState.player.bulletPool.forEach(bullet => bullet.alive = false);
                         game.currentState.otherPlayers = [];

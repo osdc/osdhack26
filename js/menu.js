@@ -17,6 +17,18 @@ const MenuScreen = (() => {
   let exploredModules = new Set();
   let gridNodes = [];
   let countdownInterval = null;
+  let registerPromptShown = false;
+
+  const INLINE_DETAILS = true;
+  const REGISTER_URL = 'https://unstop.com/hackathons/osdhack-2026-open-source-developers-communityosdc-1693803?lb=';
+  const ARCADE_LEADERBOARD_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:8787'
+    : 'http://jha.jpoop.in:8787';
+
+  function isModalOpen() {
+    const overlay = $('arcadeModalOverlay');
+    return !!overlay && overlay.classList.contains('active');
+  }
 
   const COLS = 5;
   const ROWS = 3;
@@ -49,6 +61,11 @@ const MenuScreen = (() => {
       overlay.onclick = (e) => {
         if (e.target === overlay) closeModal();
       };
+    }
+
+    if (!registerPromptShown) {
+      registerPromptShown = true;
+      setTimeout(openRegisterConfirmModal, 450);
     }
   }
 
@@ -108,7 +125,7 @@ const MenuScreen = (() => {
 
   /* ---- GRID NAVIGATION MATH ---- */
   function navigateGrid(dx, dy) {
-    if (!active) return;
+    if (!active || isModalOpen()) return;
 
     const totalItems = CONFIG.menuItems.length;
     const lastRowCols = totalItems % COLS || COLS;
@@ -213,15 +230,19 @@ const MenuScreen = (() => {
       }
     }
 
-    // Direct text — no typewriter/fade
     if (infoEl) {
-      infoEl.textContent = item.info || '';
+      if (INLINE_DETAILS && item.popup && item.popup.body && item.id !== 'register' && item.id !== 'games') {
+        infoEl.innerHTML = item.popup.body;
+        infoEl.classList.add('details-info-rich');
+      } else {
+        infoEl.textContent = item.info || '';
+        infoEl.classList.remove('details-info-rich');
+      }
       infoEl.style.color = '#fffdec';
+      infoEl.scrollTop = 0;
     }
 
     if (actionBtn) {
-      actionBtn.href = item.actionLink || '#';
-      actionBtn.textContent = `[ ${item.actionText || 'SELECT'} ]`;
       actionBtn.style.color = item.color;
       actionBtn.style.borderColor = item.color;
 
@@ -236,14 +257,30 @@ const MenuScreen = (() => {
         actionBtn.style.boxShadow = 'none';
       };
 
-      if (item.popup) {
+      if (item.id === 'register') {
+        actionBtn.textContent = '[ REGISTER? ]';
+        actionBtn.classList.remove('hidden');
         actionBtn.href = '#';
         actionBtn.onclick = (e) => {
           e.preventDefault();
-          openModal(item.popup);
+          openRegisterConfirmModal();
         };
-      } else {
+      } else if (INLINE_DETAILS && item.popup && item.popup.body && item.id !== 'games') {
+        actionBtn.classList.add('hidden');
         actionBtn.onclick = null;
+      } else {
+        actionBtn.classList.remove('hidden');
+        actionBtn.href = item.actionLink || '#';
+        actionBtn.textContent = `[ ${item.actionText || 'SELECT'} ]`;
+        if (item.popup) {
+          actionBtn.href = '#';
+          actionBtn.onclick = (e) => {
+            e.preventDefault();
+            openModal(item.popup);
+          };
+        } else {
+          actionBtn.onclick = null;
+        }
       }
     }
 
@@ -274,7 +311,7 @@ const MenuScreen = (() => {
 
   /* ---- SELECT CURRENT (ENTER/CLICK) ---- */
   function selectCurrent() {
-    if (!active) return;
+    if (!active || isModalOpen()) return;
     const item = CONFIG.menuItems[currentIndex];
     if (!item) return;
 
@@ -290,6 +327,23 @@ const MenuScreen = (() => {
       node.style.animation = 'none';
       void node.offsetWidth;
       node.style.animation = 'glitchScanline 0.15s 2';
+    }
+
+    // Register opens confirmation modal
+    if (item.id === 'register') {
+      openRegisterConfirmModal();
+      return;
+    }
+
+    // Games opens its own modal with cabinet selector
+    if (item.id === 'games' && item.popup) {
+      openModal(item.popup);
+      return;
+    }
+
+    // Inline details mode: do not open modal
+    if (INLINE_DETAILS && item.popup && item.popup.body) {
+      return;
     }
 
     if (item.actionLink && item.actionLink !== '#') {
@@ -311,6 +365,84 @@ const MenuScreen = (() => {
     if (bodyEl) bodyEl.scrollTop = 0;
     overlay.classList.add('active');
     document.body.classList.add('modal-visible');
+    const closeBtn = $('modalCloseBtn');
+    if (closeBtn) closeBtn.focus();
+    bindGameLaunchCards();
+    renderArcadeLeaderboards();
+  }
+
+  function bindGameLaunchCards() {
+    const cards = document.querySelectorAll('.game-launch-card[data-game-url]');
+    cards.forEach(card => {
+      card.onclick = () => {
+        const url = card.getAttribute('data-game-url');
+        const title = card.getAttribute('data-game-title') || 'ARCADE GAME';
+        const width = Number(card.getAttribute('data-game-width')) || 1280;
+        const height = Number(card.getAttribute('data-game-height')) || 720;
+        openGamePlayer(title, url, width, height);
+      };
+    });
+  }
+
+  async function renderArcadeLeaderboards() {
+    const grid = $('arcadeLeaderboardGrid');
+    if (!grid) return;
+
+    grid.innerHTML = '<div class="arcade-leaderboard-empty">Loading rankings...</div>';
+
+    try {
+      const response = await fetch(`${ARCADE_LEADERBOARD_URL}/api/leaderboards`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      const gameEntries = Object.entries(data || {})
+        .filter(([, scores]) => Array.isArray(scores) && scores.length)
+        .sort((left, right) => right[1][0].score - left[1][0].score);
+
+      if (!gameEntries.length) {
+        grid.innerHTML = '<div class="arcade-leaderboard-empty">No scores posted yet. Be the first one on the board.</div>';
+        return;
+      }
+
+      grid.innerHTML = gameEntries.map(([gameKey, scores]) => `
+        <section class="arcade-leaderboard-card">
+          <div class="arcade-leaderboard-title">${gameKey.replace(/[-_]/g, ' ').toUpperCase()}</div>
+          <ol class="arcade-leaderboard-list">
+            ${scores.slice(0, 5).map(entry => `
+              <li>
+                <span>${entry.player}</span>
+                <strong>${entry.score}</strong>
+              </li>
+            `).join('')}
+          </ol>
+        </section>
+      `).join('');
+    } catch (error) {
+      grid.innerHTML = '<div class="arcade-leaderboard-empty">Leaderboard offline. Start `multiplayer/arcade_leaderboard/server.py` to populate this panel.</div>';
+    }
+  }
+
+  function openGamePlayer(title, url, width, height) {
+    const titleEl = $('modalTitlebarText');
+    const bodyEl = $('modalBody');
+    if (titleEl) titleEl.textContent = title.toUpperCase();
+    if (!bodyEl) return;
+
+    bodyEl.innerHTML = `
+      <div class="game-player-shell">
+        <button type="button" class="modal-retro-btn game-player-back" id="gamePlayerBack">BACK TO GAMES</button>
+        <div class="game-player-stage" style="--game-aspect:${width} / ${height}">
+          <iframe class="game-player-frame" src="${url}" title="${title}" loading="lazy" allow="fullscreen; gamepad"></iframe>
+        </div>
+      </div>
+    `;
+
+    const backBtn = $('gamePlayerBack');
+    if (backBtn) {
+      backBtn.onclick = () => {
+        openModal(CONFIG.menuItems.find(item => item.id === 'games').popup);
+      };
+      backBtn.focus();
+    }
   }
 
   function closeModal() {
@@ -321,6 +453,39 @@ const MenuScreen = (() => {
     setTimeout(() => {
       overlay.classList.remove('active', 'closing');
     }, 200);
+  }
+
+  /* ---- REGISTER CONFIRMATION ---- */
+  function openRegisterConfirmModal() {
+    openModal({
+      title: 'REGISTER YET?',
+      body: `
+      <div class="register-confirm">
+        <div class="register-confirm-title">Hit YES to really get in the game.</div>
+        <p>Lock in your OSDHACK'26 spot now, or hit NO and keep exploring the arcade.</p>
+        <div class="register-confirm-actions">
+          <button type="button" class="modal-retro-btn register-confirm-yes" id="registerConfirmYes">YES</button>
+          <button type="button" class="modal-retro-btn register-confirm-no" id="registerConfirmNo">NO</button>
+        </div>
+      </div>
+    `
+    });
+
+    setTimeout(() => {
+      const yesBtn = $('registerConfirmYes');
+      const noBtn = $('registerConfirmNo');
+
+      if (yesBtn) {
+        yesBtn.onclick = () => {
+          window.location.href = REGISTER_URL;
+        };
+      }
+
+      if (noBtn) {
+        noBtn.onclick = closeModal;
+      }
+      if (yesBtn) yesBtn.focus();
+    }, 0);
   }
 
   /* ---- COUNTDOWN ---- */
@@ -370,6 +535,29 @@ const MenuScreen = (() => {
 
   function onKey(e) {
     if (!active) return;
+
+    if (isModalOpen()) {
+      if (e.code === 'Escape') {
+        e.preventDefault();
+        closeModal();
+        return;
+      }
+
+      const blockedKeys = [
+        'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+        'KeyA', 'KeyD', 'KeyW', 'KeyS',
+        'Enter', 'Space'
+      ];
+
+      if (blockedKeys.includes(e.code)) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+
+      return;
+    }
+
     switch (e.code) {
       case 'ArrowLeft': case 'KeyA': e.preventDefault(); navigateGrid(-1, 0); break;
       case 'ArrowRight': case 'KeyD': e.preventDefault(); navigateGrid(1, 0); break;

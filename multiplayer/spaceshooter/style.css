@@ -142,3 +142,8 @@
             text-shadow: 0 0 10px #ff0000;
             display: none;
         }
+
+        #pause {
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(2px);
+        }

@@ -124,7 +124,7 @@ const CONFIG = {
     {
       id: 'dates',
       label: 'DATES',
-      color: '#e74c3c',
+      color: '#ff5c5c',
       stats: { importance: 5, urgency: 4, reading: 1 },
       info: 'Don\'t miss a beat! Keep track of key dates: Registration deadline, opening ceremony, coding sprints, and project submission deadlines.',
       actionText: 'SAVE DATES',
@@ -166,7 +166,7 @@ const CONFIG = {
     {
       id: 'timeline',
       label: 'TIMELINE',
-      color: '#3498db',
+      color: '#4da3ff',
       stats: { duration: 5, intensity: 5, focus: 4 },
       info: 'The official 48-hour schedule. T-minus starts soon! Tracks kickoffs, mentoring feedback slots, workshops, and presentation showcases.',
       actionText: 'VIEW SCHEDULE',
@@ -180,7 +180,7 @@ const CONFIG = {
     {
       id: 'theme',
       label: 'THEME',
-      color: '#9b59b6',
+      color: '#b86bff',
       stats: { creativity: 5, nostalgia: 5, hype: 5 },
       info: 'The thematic wrapper for OSDHACK\'26. Think nostalgia, cabinet retro graphics, and pizza! Unleash your inner 80s arcade dev.',
       actionText: 'REVEAL SECRET',
@@ -194,7 +194,7 @@ const CONFIG = {
     {
       id: 'prizes',
       label: 'PRIZES',
-      color: '#f39c12',
+      color: '#ffb000',
       stats: { bounty: 5, loot: 5, swag: 4 },
       info: 'Total bounty worth $10,000! Top teams win retro game cabinets, custom keycaps, mech keyboards, and cool custom swag bags.',
       actionText: 'VIEW BOUNTIES',
@@ -208,7 +208,7 @@ const CONFIG = {
     {
       id: 'downloadAssets',
       label: 'DOWNLOAD ASSETS',
-      color: '#f39c12',
+      color: '#ff8c42',
       stats: { utility: 5, variety: 4, size: 2 },
       info: 'Snag the official OSDHACK\'26 asset bundle: retro graphics, pixelated sound effects, color palette codes, and brand templates.',
       actionText: 'GET ASSETS PACK',
@@ -222,7 +222,7 @@ const CONFIG = {
     {
       id: 'speedTyping',
       label: 'SPEED TYPING',
-      color: '#34495e',
+      color: '#00e5ff',
       stats: { difficulty: 3, reflex: 5, fun: 5 },
       info: 'Compete in the side-quest typing tournament. Test your word-per-minute speed under pressure and top the global arcade leaderboard!',
       actionText: 'ABOUT SPEED TYPING',
@@ -236,7 +236,7 @@ const CONFIG = {
     {
       id: 'captureTheFlag',
       label: 'CAPTURE THE FLAG',
-      color: '#e74c3c',
+      color: '#ff3b7f',
       stats: { difficulty: 4, cyber: 5, rewards: 5 },
       info: 'A parallel cybersecurity contest. Hack, patch, and capture target flags in reverse engineering, cryptography, and web security.',
       actionText: 'ABOUT CTF',
@@ -248,23 +248,9 @@ const CONFIG = {
       iconPath: 'assets/icons/flag.png'
     },
     {
-      id: 'tracks',
-      label: 'TRACKS',
-      color: '#e040fb',
-      stats: { tracks: 4, diversity: 5, innovation: 5 },
-      info: 'Explore the four hacking tracks: 1) Web3 Cabinets, 2) AI Retro Agents, 3) Open-Source Arcade emulator, 4) Creative Hardware hacks.',
-      actionText: 'READ TRACK DETAILS',
-      actionLink: '#',
-      popup: {
-        title: 'HACKING TRACKS',
-        body: ''
-      },
-      iconPath: 'assets/icons/launch.png'
-    },
-    {
       id: 'faqs',
       label: 'FAQs',
-      color: '#00e5ff',
+      color: '#f7ff4d',
       stats: { quantity: 5, help: 5, clarity: 4 },
       info: 'Answers to all your burning questions: team sizes, hardware allowance, food schedules (yes, there is pizza!), and online setup.',
       actionText: 'OPEN FAQ CENTER',
@@ -278,7 +264,7 @@ const CONFIG = {
     {
       id: 'battleships',
       label: 'BATTLESHIPS',
-      color: '#00acc1',
+      color: '#00c2a8',
       stats: { fun: 5, strategy: 5, challenge: 4 },
       info: 'Command your fleet and outmanoeuvre opponents in the ultimate coding battleship showdown. Strategy meets syntax in this nautical mini-game!',
       actionText: 'PLAY BATTLESHIPS',
@@ -294,12 +280,12 @@ const CONFIG = {
       label: 'GAMES',
       color: '#e040fb',
       stats: { fun: 5, challenge: 4, rewards: 5 },
-      info: 'Take a break and play some retro arcade mini-games between coding sessions. Compete for high scores and bragging rights!',
-      actionText: 'PLAY ARCADE',
+      info: 'Pick a cabinet and jump in! Some games may need their server running to work. Choose your retro adventure below.',
+      actionText: 'OPEN ARCADE',
       actionLink: '#',
       popup: {
-        title: 'ARCADE MINI-GAMES',
-        body: '<div class="modal-section"><div class="modal-section-title">Take a Break!</div><p>Step away from the coding terminal and dive into our retro arcade mini-games. Compete for high scores and earn bragging rights among fellow hackers!</p></div><div class="modal-section"><div class="modal-section-title">Featured Games</div><ul><li>Pixel Pong</li><li>Space Invaders</li><li>Snake Rally</li><li>And more!</li></ul></div>'
+        title: 'ARCADE GAME SELECT',
+        body: '<div class="modal-section"><div class="modal-section-title">Choose Your Cabinet</div><p>Step away from the coding terminal and pick a retro arcade cabinet below.</p></div><div class="game-select-grid"><button type="button" class="game-launch-card" data-game-url="multiplayer/gee-bee/index.html" data-game-title="Gee Bee" data-game-key="geebee" data-game-width="560" data-game-height="640"><span class="game-launch-title">Gee Bee</span><span class="game-launch-meta">Breakout · Solo</span><span class="game-launch-note">Classic brick-breaking action</span></button><button type="button" class="game-launch-card" data-game-url="multiplayer/pacman/index.html" data-game-title="Pac-Man" data-game-key="pacman" data-game-width="1280" data-game-height="720"><span class="game-launch-title">Pac-Man</span><span class="game-launch-meta">Maze · Solo</span><span class="game-launch-note">Eat pellets, avoid ghosts</span></button><button type="button" class="game-launch-card" data-game-url="multiplayer/pong/index.html" data-game-title="Pixel Pong" data-game-key="pong" data-game-width="800" data-game-height="500"><span class="game-launch-title">Pixel Pong</span><span class="game-launch-meta">Paddle · 2 Player</span><span class="game-launch-note">Local multiplayer classic</span></button><button type="button" class="game-launch-card" data-game-url="multiplayer/spaceshooter/index.html" data-game-title="Space Shooter" data-game-key="spaceshooter" data-game-width="1280" data-game-height="720"><span class="game-launch-title">Space Shooter</span><span class="game-launch-meta">Shooter · Solo</span><span class="game-launch-note">Blast incoming waves</span></button><button type="button" class="game-launch-card" data-game-url="multiplayer/Tank/index.html" data-game-title="Tank Wars" data-game-key="tank" data-game-width="1400" data-game-height="900"><span class="game-launch-title">Tank Wars</span><span class="game-launch-meta">Tactical · 2 Player</span><span class="game-launch-note">Local multiplayer tank duel</span></button></div><div class="modal-section"><div class="modal-section-title">Leaderboards</div><div class="arcade-leaderboard-grid" id="arcadeLeaderboardGrid"><div class="arcade-leaderboard-empty">Start the leaderboard server to see rankings.</div></div></div><div class="modal-section"><div class="modal-section-title">Note</div><p>Some games require a local server to be running. If a game doesn\'t load, try starting the server first.</p></div>'
       },
       iconPath: 'assets/icons/geek.png'
     },
