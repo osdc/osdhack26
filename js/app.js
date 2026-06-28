@@ -26,9 +26,11 @@
     const v1        = document.getElementById('phase1Video');
     const v2        = document.getElementById('loopVideo');
     const v3        = document.getElementById('phase3Video');
+    const pressPrompt = document.querySelector('.press-space');
 
     let phase        = 'phase1';
     let cutsceneDone = false;
+    let phaseAdvanceBound = false;
 
     function playVideo(video) {
       video.currentTime = 0;
@@ -58,8 +60,33 @@
       phase = 'phase3';
       v2.loop = false;
       v2.pause();
-      document.querySelector(".press-space").style.opacity = 0;
+      if (pressPrompt) pressPrompt.style.opacity = 0;
+      unbindPhaseAdvance();
       show(v3, from);
+    }
+
+    function onPhaseAdvanceInput(e) {
+      if (e.type === 'keydown' && e.code !== 'Space' && e.code !== 'Enter') return;
+      if (e.cancelable) e.preventDefault();
+      goToPhase3();
+    }
+
+    function bindPhaseAdvance() {
+      if (phaseAdvanceBound) return;
+      phaseAdvanceBound = true;
+      window.addEventListener('keydown', onPhaseAdvanceInput);
+      window.addEventListener('pointerdown', onPhaseAdvanceInput);
+      window.addEventListener('touchstart', onPhaseAdvanceInput, { passive: false });
+      window.addEventListener('click', onPhaseAdvanceInput);
+    }
+
+    function unbindPhaseAdvance() {
+      if (!phaseAdvanceBound) return;
+      phaseAdvanceBound = false;
+      window.removeEventListener('keydown', onPhaseAdvanceInput);
+      window.removeEventListener('pointerdown', onPhaseAdvanceInput);
+      window.removeEventListener('touchstart', onPhaseAdvanceInput);
+      window.removeEventListener('click', onPhaseAdvanceInput);
     }
 
     v1.addEventListener('ended', () => {
@@ -67,16 +94,13 @@
       phase = 'loop';
       show(v2, v1);
       setTimeout(() => {
-        document.querySelector(".press-space").style.display = "block";
-    }, 4000);
+        if (pressPrompt) {
+          pressPrompt.style.display = 'block';
+          pressPrompt.textContent = 'PRESS SPACE / TAP TO CONTINUE';
+        }
+        bindPhaseAdvance();
+      }, 4000);
     }, { once: true });
-
-    function onSpace(e) {
-      if (e.code !== 'Space') return;
-      window.removeEventListener('keydown', onSpace);
-      goToPhase3();
-    }
-    window.addEventListener('keydown', onSpace);
 
     // jabardasti yahan bhi saare flags
     v1.muted = true;
