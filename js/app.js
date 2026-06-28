@@ -50,8 +50,6 @@
     let phase        = 'phase1';
     let cutsceneDone = false;
     let cutsceneSkipBound = false;
-    let phase3ReadyToEnter = false;
-
     function playVideo(video) {
       video.currentTime = 0;
       const promise = video.play();
@@ -87,48 +85,20 @@
       });
     }
 
-    function holdPhase3EndFrame(from) {
-      phase = 'awaiting-entry';
-      phase3ReadyToEnter = true;
-      hidePrompt();
-      requestAnimationFrame(() => {
-        v3.style.opacity = '1';
-        if (from) {
-          v3.addEventListener('transitionend', () => {
-            from.style.opacity = '0';
-          }, { once: true });
-        }
-      });
-
-      const seekToEndFrame = () => {
-        const safeDuration = Number.isFinite(v3.duration) ? v3.duration : 0;
-        const endFrameTime = safeDuration > 0.08 ? safeDuration - 0.05 : Math.max(safeDuration, 0);
-        v3.currentTime = endFrameTime;
-        v3.pause();
-      };
-
-      if (v3.readyState >= HTMLMediaElement.HAVE_METADATA) {
-        seekToEndFrame();
-      } else {
-        v3.addEventListener('loadedmetadata', seekToEndFrame, { once: true });
-        v3.load();
-      }
-    }
-
     function goToPhase3() {
-      if (phase === 'phase3' || phase === 'awaiting-entry' || phase === 'done') return;
+      if (phase === 'phase3' || phase === 'done') return;
       const from = phase === 'loop' ? v2 : v1;
-      phase3ReadyToEnter = false;
+      phase = 'phase3';
       v2.loop = false;
       v2.pause();
-      holdPhase3EndFrame(from);
+      hidePrompt();
+      show(v3, from);
     }
 
     function enterWebsite() {
       if (cutsceneDone) return;
       cutsceneDone = true;
       phase = 'done';
-      phase3ReadyToEnter = false;
       unbindCutsceneSkip();
       hidePrompt();
 
@@ -181,13 +151,7 @@
       if (e.type === 'keydown' && e.code !== 'Space' && e.code !== 'Enter') return;
       if (e.type !== 'keydown' && !isTouchDevice) return;
       if (e.cancelable) e.preventDefault();
-      if (phase === 'phase1' || phase === 'loop') {
-        goToPhase3();
-        return;
-      }
-      if (phase === 'awaiting-entry' && phase3ReadyToEnter) {
-        enterWebsite();
-      }
+      if (phase === 'phase1' || phase === 'loop') goToPhase3();
     }
 
     function bindCutsceneSkip() {
@@ -209,7 +173,9 @@
       phase = 'loop';
       show(v2, v1);
       setTimeout(() => {
-        setPrompt('PRESS SPACE / TAP TO SKIP');
+        if (phase === 'loop') {
+          setPrompt('PRESS SPACE / TAP TO INSERT COIN');
+        }
       }, 4000);
     }, { once: true });
 
@@ -230,6 +196,10 @@
     } else {
       v1.addEventListener('canplay', () => playVideo(v1), { once: true });
     }
+
+    v3.addEventListener('ended', () => {
+      enterWebsite();
+    }, { once: true });
 
   });
 })();
