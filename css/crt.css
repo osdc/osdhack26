@@ -257,6 +257,50 @@
   opacity: 1;
 }
 
+@media (max-width: 767px) {
+  .crt-monitor {
+    width: 100vw;
+    height: var(--app-height, 100dvh);
+    max-height: none;
+    border-radius: 16px;
+    box-shadow:
+      inset 0 0 16px rgba(0, 0, 0, 0.55),
+      0 0 0 2px #0d0d1a,
+      0 0 0 4px #2a2a42,
+      0 0 0 6px #1a1a2e,
+      0 0 24px rgba(0, 0, 0, 0.75);
+  }
+
+  .crt-monitor::before {
+    inset: -1px;
+    border-radius: 18px;
+  }
+
+  .crt-screen {
+    inset: 4px;
+    border-radius: 12px;
+    transform: none;
+    filter: none;
+    box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.45);
+  }
+
+  .crt-screen::before,
+  .crt-screen::after,
+  .crt-chromatic,
+  .crt-phosphor,
+  .crt-noise {
+    display: none;
+  }
+
+  .crt-scanlines {
+    opacity: 0.32;
+  }
+
+  .crt-vignette {
+    background: radial-gradient(ellipse 78% 72% at 50% 50%, transparent 56%, rgba(0, 0, 0, 0.32) 100%);
+  }
+}
+
 /* ---- BOOT OVERLAY ----
  * Covers the screen during the CRT power-on sequence.
  * JS toggles phase classes to step through the boot.

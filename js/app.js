@@ -19,6 +19,23 @@
   'use strict';
 
   document.addEventListener('DOMContentLoaded', () => {
+    function syncAppHeight() {
+      const viewportHeight = window.visualViewport
+        ? window.visualViewport.height
+        : window.innerHeight;
+      document.documentElement.style.setProperty('--app-height', `${Math.round(viewportHeight)}px`);
+    }
+
+    syncAppHeight();
+    window.addEventListener('resize', syncAppHeight);
+    window.addEventListener('orientationchange', syncAppHeight);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', syncAppHeight);
+    }
+
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+      document.body.classList.add('touch-device');
+    }
 
     /* ---- CUTSCENE ---- */
     const cinematic = document.getElementById('cinematic');

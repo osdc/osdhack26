@@ -48,6 +48,23 @@
   transition: .5s ease;
 }
 
+@media (max-width: 767px) {
+  .press-space {
+    left: 50%;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+    top: auto;
+    width: min(92vw, 360px);
+    margin: 0;
+    transform: translateX(-50%);
+    padding: 0.9rem 1rem;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.45;
+    border-radius: 12px;
+    background-color: rgba(18, 72, 108, 0.78);
+  }
+}
+
 @keyframes slideIn {
   0%  {
     transform: translateX(-100%);
