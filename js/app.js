@@ -50,6 +50,7 @@
     let phase        = 'phase1';
     let cutsceneDone = false;
     let cutsceneSkipBound = false;
+    let phase3ReadyToEnter = false;
 
     function playVideo(video) {
       video.currentTime = 0;
@@ -59,10 +60,23 @@
           console.warn('[Cutscene] Video playback failed:', error);
         });
       }
+      return promise;
+    }
+
+    function setPrompt(message) {
+      if (!pressPrompt) return;
+      pressPrompt.textContent = message;
+      pressPrompt.style.display = 'block';
+      pressPrompt.style.opacity = 1;
+    }
+
+    function hidePrompt() {
+      if (!pressPrompt) return;
+      pressPrompt.style.opacity = 0;
     }
 
     function show(to, from) {
-      playVideo(to);
+      const playPromise = playVideo(to);
       requestAnimationFrame(() => {
         to.style.opacity = '1';
         if (from) {
@@ -71,71 +85,34 @@
           }, { once: true });
         }
       });
+      return playPromise;
     }
 
     function goToPhase3() {
       if (phase === 'phase3' || phase === 'done') return;
       const from = phase === 'loop' ? v2 : v1;
       phase = 'phase3';
+      phase3ReadyToEnter = false;
       v2.loop = false;
       v2.pause();
-      if (pressPrompt) pressPrompt.style.opacity = 0;
-      unbindCutsceneSkip();
-      show(v3, from);
+      hidePrompt();
+      const playPromise = show(v3, from);
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {
+          phase = 'awaiting-entry';
+          phase3ReadyToEnter = true;
+          setPrompt('PRESS SPACE / TAP TO ENTER');
+        });
+      }
     }
 
-    function onCutsceneSkipInput(e) {
-      if (phase === 'phase3' || phase === 'done') return;
-      if (e.type === 'keydown' && e.code !== 'Space' && e.code !== 'Enter') return;
-      if (e.type !== 'keydown' && !isTouchDevice) return;
-      if (e.cancelable) e.preventDefault();
-      goToPhase3();
-    }
-
-    function bindCutsceneSkip() {
-      if (cutsceneSkipBound) return;
-      cutsceneSkipBound = true;
-      window.addEventListener('keydown', onCutsceneSkipInput);
-      window.addEventListener('touchstart', onCutsceneSkipInput, { passive: false });
-    }
-
-    function unbindCutsceneSkip() {
-      if (!cutsceneSkipBound) return;
-      cutsceneSkipBound = false;
-      window.removeEventListener('keydown', onCutsceneSkipInput);
-      window.removeEventListener('touchstart', onCutsceneSkipInput);
-    }
-
-    v1.addEventListener('ended', () => {
-      if (phase !== 'phase1') return;
-      phase = 'loop';
-      show(v2, v1);
-      setTimeout(() => {
-        if (pressPrompt) {
-          pressPrompt.style.display = 'block';
-          pressPrompt.textContent = 'PRESS SPACE / TAP TO CONTINUE';
-        }
-      }, 4000);
-    }, { once: true });
-
-    bindCutsceneSkip();
-
-    // jabardasti yahan bhi saare flags
-    v1.muted = true;
-    v1.defaultMuted = true;
-    v1.playsInline = true;
-    if (v1.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
-      playVideo(v1);
-    } else {
-      v1.addEventListener('canplay', () => playVideo(v1), { once: true });
-    }
-
-    // phase3 - go to website
-    v3.addEventListener('ended', () => {
+    function enterWebsite() {
       if (cutsceneDone) return;
       cutsceneDone = true;
       phase = 'done';
+      phase3ReadyToEnter = false;
       unbindCutsceneSkip();
+      hidePrompt();
 
       website.classList.add('visible');
 
@@ -155,7 +132,7 @@
           else { Audio.stopAmbient(); }
         });
       }
-      
+
       // paint website first, then crossfade cinematic out
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -180,7 +157,68 @@
           });
         });
       });
+    }
 
+    function onCutsceneSkipInput(e) {
+      if (e.type === 'keydown' && e.code !== 'Space' && e.code !== 'Enter') return;
+      if (e.type !== 'keydown' && !isTouchDevice) return;
+      if (e.cancelable) e.preventDefault();
+      if (phase === 'phase1' || phase === 'loop') {
+        goToPhase3();
+        return;
+      }
+      if (phase === 'awaiting-entry' && phase3ReadyToEnter) {
+        enterWebsite();
+      }
+    }
+
+    function bindCutsceneSkip() {
+      if (cutsceneSkipBound) return;
+      cutsceneSkipBound = true;
+      window.addEventListener('keydown', onCutsceneSkipInput);
+      window.addEventListener('touchstart', onCutsceneSkipInput, { passive: false });
+    }
+
+    function unbindCutsceneSkip() {
+      if (!cutsceneSkipBound) return;
+      cutsceneSkipBound = false;
+      window.removeEventListener('keydown', onCutsceneSkipInput);
+      window.removeEventListener('touchstart', onCutsceneSkipInput);
+    }
+
+    v1.addEventListener('ended', () => {
+      if (phase !== 'phase1') return;
+      phase = 'loop';
+      show(v2, v1);
+      setTimeout(() => {
+        setPrompt('PRESS SPACE / TAP TO SKIP');
+      }, 4000);
+    }, { once: true });
+
+    bindCutsceneSkip();
+
+    // jabardasti yahan bhi saare flags
+    v1.muted = true;
+    v1.defaultMuted = true;
+    v1.playsInline = true;
+    v2.muted = true;
+    v2.defaultMuted = true;
+    v2.playsInline = true;
+    v3.muted = true;
+    v3.defaultMuted = true;
+    v3.playsInline = true;
+    if (v1.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      playVideo(v1);
+    } else {
+      v1.addEventListener('canplay', () => playVideo(v1), { once: true });
+    }
+
+    // phase3 - wait for explicit enter input
+    v3.addEventListener('ended', () => {
+      if (cutsceneDone) return;
+      phase = 'awaiting-entry';
+      phase3ReadyToEnter = true;
+      setPrompt('PRESS SPACE / TAP TO ENTER');
     }, { once: true });
 
   });
